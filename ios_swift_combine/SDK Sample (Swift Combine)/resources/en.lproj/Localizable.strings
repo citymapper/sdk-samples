@@ -1,0 +1,15 @@
+/* 
+  Localizable.strings
+*/
+
+/**** Location Permission Dialogue ****/
+
+/* The title of the button used to grant location permissions" */
+"Enable_Location_Button_Title" = "Enable Location";
+
+/* The title of the button used to dismiss the location permissions screen */
+"Dismiss_Location_Permission_Screen_Button_Title" = "Done";
+
+/* Visual instructions: format for a turn instruction that's coming up in a certain distance in meters
+ %@ is replaced with the distance in meters (e.g. "15") */
+"Visual_Instruction_Meters_Format" = "In %@ m";

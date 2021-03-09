@@ -1,0 +1,59 @@
+buildscript {
+    apply from: rootProject.file('dependencies.gradle')
+
+    repositories {
+        google()
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath deps.androidGradlePlugin
+        classpath deps.kotlin.gradlePlugin
+    }
+}
+
+ext {
+    compileSdkVersion = 30
+    targetSdkVersion = 30
+    minSdkVersion = 21
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        jcenter()
+        maven {
+            url 'https://downloads.external.citymapper.com/sdk/android/releases/maven'
+            authentication {
+                basic(BasicAuthentication)
+            }
+            credentials {
+                username = "citymappersdk"
+                password = project.properties['CITYMAPPER_SDK_INSTALL_TOKEN'] ?: ""
+            }
+        }
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+        kotlinOptions {
+            jvmTarget = "1.8"
+
+            freeCompilerArgs += [
+                '-Xjsr305=strict',
+                '-Xjvm-default=all',
+                '-Xopt-in=kotlin.time.ExperimentalTime'
+            ]
+        }
+    }
+}
+
+wrapper {
+    gradleVersion = "6.8.2"
+    distributionType = Wrapper.DistributionType.ALL
+}

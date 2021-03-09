@@ -1,0 +1,9 @@
+[*.kt]
+indent_size = 2
+ij_kotlin_imports_layout=*
+
+[*.gradle]
+indent_size = 4
+
+[*]
+insert_final_newline = true

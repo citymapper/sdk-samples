@@ -1,0 +1,16 @@
+PODS:
+  - CitymapperNavigation (0.3.0)
+
+DEPENDENCIES:
+  - CitymapperNavigation (= 0.3.0)
+
+SPEC REPOS:
+  trunk:
+    - CitymapperNavigation
+
+SPEC CHECKSUMS:
+  CitymapperNavigation: c3d59e3288110e5013911bb73d3a0db38e64815c
+
+PODFILE CHECKSUM: e31848de6070f4b1c11a208768a1a8a0159c1d6e
+
+COCOAPODS: 1.10.1

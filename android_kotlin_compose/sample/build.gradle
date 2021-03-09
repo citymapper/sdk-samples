@@ -1,0 +1,75 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-parcelize'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        applicationId "com.example.sdk.sample"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+
+        buildConfigField "String", "CITYMAPPER_API_KEY", "\"${project.findProperty("CITYMAPPER_API_KEY") ?: ""}\""
+        buildConfigField "String", "CITYMAPPER_ENDPOINT_URL", "\"${project.findProperty("CITYMAPPER_ENDPOINT_URL") ?: ""}\""
+
+        resValue "string", "google_map_key", "\"${project.findProperty("CITYMAPPER_SAMPLE_GOOGLE_MAP_KEY") ?: ""}\""
+
+        buildFeatures {
+            compose = true
+            buildConfig = true
+        }
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    kotlinOptions {
+        useIR = true
+        freeCompilerArgs += [
+            '-Xopt-in=kotlin.RequiresOptIn',
+            '-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi',
+            '-Xopt-in=kotlinx.coroutines.FlowPreview',
+        ]
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion versions.compose
+    }
+}
+
+dependencies {
+    implementation 'com.citymapper.sdk:citymapper-navigation:0.3.0'
+
+    implementation deps.androidx.core
+    implementation deps.androidx.activity
+    implementation deps.androidx.appcompat
+    implementation deps.androidx.constraintlayout
+    implementation deps.androidx.lifecycle.viewmodel
+    implementation deps.compose.runtime
+    implementation deps.compose.runtimeLivedata
+    implementation deps.compose.foundation
+    implementation deps.compose.material
+    implementation deps.compose.layout
+    implementation deps.compose.animation
+    implementation deps.compose.uiTooling
+
+    implementation deps.kotlin.coroutines.playServices
+
+    implementation deps.googleMaps
+    implementation deps.gms.location
+
+    testImplementation deps.junit
+    androidTestImplementation deps.androidx.test.junit
+    androidTestImplementation deps.androidx.test.espresso
+
+}

@@ -9,24 +9,27 @@ import UIKit
 import CitymapperNavigation
 
 final class MapListViewController: UIViewController {
-
     private static let londonLocation = CLLocation(latitude: 51.509865,
                                                    longitude: -0.118092)
     private static let smallCircularButtonSize = CGSize(width: 50,
-                                                height: 50)
+                                                        height: 50)
 
     let viewModel: MapListViewModel
+
     private var mapTapStateCancellable: AnyCancellable?
     private var primaryRouteDisplayingCancellable: AnyCancellable?
     private var latestLocationCancellable: AnyCancellable?
-    private var instructionsCancellable: AnyCancellable?
+    private var listSpecsCancellable: AnyCancellable?
+
     private var latestErrorCancellable: AnyCancellable?
     private var centerMapOnLocationUpdatesCancellable: AnyCancellable?
     private var showMapResetButtonCancellable: AnyCancellable?
     private var showEndActiveNavigationButtonCancellable: AnyCancellable?
     private var latestGuidanceEventCancellable: AnyCancellable?
-
-    private lazy var speaker: Speaker = SpeakerConcrete()
+    private var currentApiCancellable: AnyCancellable?
+    private var shouldShowProfileSwitcherCancellable: AnyCancellable?
+    private var currentBrandIdCancellable: AnyCancellable?
+    private var shouldShowBrandIdButtonCancellable: AnyCancellable?
 
     private lazy var profileSwitcher: UISegmentedControl = {
         let segmentedControl = UISegmentedControl(frame: .zero)
@@ -41,10 +44,34 @@ final class MapListViewController: UIViewController {
                                        animated: false)
         segmentedControl.selectedSegmentIndex = 1
         segmentedControl.addTarget(self,
-                         action: #selector(self.setCurrentProfile),
-                         for: .valueChanged)
+                                   action: #selector(self.setCurrentProfile),
+                                   for: .valueChanged)
 
         return segmentedControl
+    }()
+
+    private lazy var apiSwitcher: UIButton = {
+        let button = UIButton(primaryAction: UIAction { [weak self] _ in
+            self?.apiSwitcherButtonTapped()
+        })
+        button.setTitle(UserDefaults.standard.currentSelectedApi,
+                        for: .normal)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+        button.backgroundColor = .systemBackground
+        button.layer.cornerRadius = 10
+        return button
+    }()
+
+    private lazy var brandIdButton: UIButton = {
+        let button = UIButton(primaryAction: UIAction { [weak self] _ in
+            self?.brandIdButtonTapped()
+        })
+        button.setTitle(UserDefaults.standard.currentHireBrandId ?? "Set brand id",
+                        for: .normal)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+        button.backgroundColor = .systemBackground
+        button.layer.cornerRadius = 10
+        return button
     }()
 
     private lazy var mapView: MKMapView = {
@@ -66,7 +93,7 @@ final class MapListViewController: UIViewController {
     }()
 
     private lazy var resetMapButton: UIButton = {
-        let button = UIButton(primaryAction: UIAction { [weak self] (_) in
+        let button = UIButton(primaryAction: UIAction { [weak self] _ in
             self?.resetMapButtonTapped()
         })
         let resetLocationIcon = UIImage(systemName: "location.fill")
@@ -79,7 +106,7 @@ final class MapListViewController: UIViewController {
     }()
 
     private lazy var endActiveNavigationButton: UIButton = {
-        let button = UIButton(primaryAction: UIAction { [weak self] (_) in
+        let button = UIButton(primaryAction: UIAction { [weak self] _ in
             self?.endActiveNavigationButtonTapped()
         })
         let shareLogsButton = UIImage(systemName: "multiply.circle")
@@ -92,7 +119,7 @@ final class MapListViewController: UIViewController {
     }()
 
     private lazy var shareLogsButton: UIButton = {
-        let button = UIButton(primaryAction: UIAction { [weak self] (_) in
+        let button = UIButton(primaryAction: UIAction { [weak self] _ in
             self?.shareLogsButtonTapped()
         })
         let shareLogsButton = UIImage(systemName: "square.and.arrow.up")
@@ -112,6 +139,9 @@ final class MapListViewController: UIViewController {
         tableView.rowHeight = MapListViewController.kDefaultInstructionRowHeight
         tableView.backgroundColor = .white
         tableView.separatorStyle = .none
+
+        tableView.register(BasicTableViewCell.self, forCellReuseIdentifier: BasicTableViewCell.kReuseId)
+        tableView.register(VehicleLockStateButtonCell.self, forCellReuseIdentifier: VehicleLockStateButtonCell.kReuseId)
         return tableView
     }()
 
@@ -123,6 +153,7 @@ final class MapListViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -130,24 +161,26 @@ final class MapListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.view.backgroundColor = .white
-        self.view.addSubview(self.mapView)
-        self.view.addSubview(self.profileSwitcher)
-        self.view.addSubview(self.resetMapButton)
-        self.view.addSubview(self.endActiveNavigationButton)
-        self.view.addSubview(self.shareLogsButton)
-        self.view.addSubview(self.instructionsTableView)
+        view.backgroundColor = .white
+        view.addSubview(mapView)
+        view.addSubview(profileSwitcher)
+        view.addSubview(apiSwitcher)
+        view.addSubview(brandIdButton)
+        view.addSubview(resetMapButton)
+        view.addSubview(endActiveNavigationButton)
+        view.addSubview(shareLogsButton)
+        view.addSubview(instructionsTableView)
 
-        self.subscribeToViewModel()
+        subscribeToViewModel()
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        if self.viewModel.shouldShowLocationPermissionScreen() {
-            self.present(self.viewModel.locationPermissionScreen(),
-                         animated: true,
-                         completion: nil)
+        if viewModel.shouldShowLocationPermissionScreen() {
+            present(viewModel.locationPermissionScreen(),
+                    animated: true,
+                    completion: nil)
         }
     }
 
@@ -156,62 +189,84 @@ final class MapListViewController: UIViewController {
 
         let screenEdgeMargin: CGFloat = 15
 
-        let mapViewHeight = self.view.bounds.height * 0.8
-        self.mapView.frame = CGRect(x: 0,
-                                    y: 0,
-                                    width: self.view.bounds.width,
-                                    height: mapViewHeight)
+        let mapViewHeight = view.bounds.height * 0.8
+        mapView.frame = CGRect(x: 0,
+                               y: 0,
+                               width: view.bounds.width,
+                               height: mapViewHeight)
 
-        let xOriginSmallButtons = self.view.bounds.width - (MapListViewController.smallCircularButtonSize.width + screenEdgeMargin)
+        layoutApiButtons()
+
+        let xOriginSmallButtons = view.bounds.width - (MapListViewController.smallCircularButtonSize.width + screenEdgeMargin)
         var yOriginSmallButtons = mapViewHeight - (screenEdgeMargin + screenEdgeMargin + MapListViewController.smallCircularButtonSize.height)
 
-        self.profileSwitcher.frame = CGRect(x: 15,
-                                            y: view.safeAreaInsets.top + 15,
-                                            width: self.view.bounds.width - 30,
-                                            height: 30)
+        shareLogsButton.frame = CGRect(x: xOriginSmallButtons,
+                                       y: yOriginSmallButtons,
+                                       width: Self.smallCircularButtonSize.width,
+                                       height: Self.smallCircularButtonSize.height)
+        yOriginSmallButtons = shareLogsButton.frame.minY - (screenEdgeMargin + Self.smallCircularButtonSize.height)
 
-        self.shareLogsButton.frame = CGRect(x: xOriginSmallButtons,
-                                            y: yOriginSmallButtons,
-                                            width: Self.smallCircularButtonSize.width,
-                                            height: Self.smallCircularButtonSize.height)
-        yOriginSmallButtons = self.shareLogsButton.frame.minY - (screenEdgeMargin + Self.smallCircularButtonSize.height)
-
-        if !self.endActiveNavigationButton.isHidden {
-            self.endActiveNavigationButton.frame = CGRect(x: xOriginSmallButtons,
-                                                y: yOriginSmallButtons,
-                                                width: Self.smallCircularButtonSize.width,
-                                                height: Self.smallCircularButtonSize.height)
-            yOriginSmallButtons = self.endActiveNavigationButton.frame.minY - (screenEdgeMargin + Self.smallCircularButtonSize.height)
+        if !endActiveNavigationButton.isHidden {
+            endActiveNavigationButton.frame = CGRect(x: xOriginSmallButtons,
+                                                     y: yOriginSmallButtons,
+                                                     width: Self.smallCircularButtonSize.width,
+                                                     height: Self.smallCircularButtonSize.height)
+            yOriginSmallButtons = endActiveNavigationButton.frame.minY - (screenEdgeMargin + Self.smallCircularButtonSize.height)
         }
 
-        if !self.resetMapButton.isHidden {
-            self.resetMapButton.frame = CGRect(x: xOriginSmallButtons,
-                                               y: yOriginSmallButtons,
-                                               width: MapListViewController.smallCircularButtonSize.width,
-                                               height: MapListViewController.smallCircularButtonSize.height)
+        if !resetMapButton.isHidden {
+            resetMapButton.frame = CGRect(x: xOriginSmallButtons,
+                                          y: yOriginSmallButtons,
+                                          width: MapListViewController.smallCircularButtonSize.width,
+                                          height: MapListViewController.smallCircularButtonSize.height)
         }
 
-        let tableHeight = self.view.bounds.height - mapViewHeight
-        self.instructionsTableView.frame = CGRect(x: 0,
-                                                  y: self.mapView.frame.maxY,
-                                                  width: self.view.bounds.width,
-                                                  height: tableHeight)
+        let tableHeight = view.bounds.height - mapViewHeight
+        instructionsTableView.frame = CGRect(x: 0,
+                                             y: mapView.frame.maxY,
+                                             width: view.bounds.width,
+                                             height: tableHeight)
+    }
+
+    private func layoutApiButtons() {
+        let xOriginApiButtons: CGFloat = 15
+        var apiButtonsYOrigin: CGFloat = view.safeAreaInsets.top + 15
+
+        if !profileSwitcher.isHidden {
+            profileSwitcher.frame = CGRect(x: xOriginApiButtons,
+                                           y: view.safeAreaInsets.top + 15,
+                                           width: view.bounds.width - 30,
+                                           height: 30)
+            apiButtonsYOrigin = profileSwitcher.frame.maxY + 15
+        }
+        apiSwitcher.frame = CGRect(x: xOriginApiButtons,
+                                   y: apiButtonsYOrigin,
+                                   width: 220,
+                                   height: 30)
+        apiButtonsYOrigin = apiSwitcher.frame.maxY + 15
+
+        if !brandIdButton.isHidden {
+            brandIdButton.frame = CGRect(x: xOriginApiButtons,
+                                         y: apiButtonsYOrigin,
+                                         width: 180,
+                                         height: 30)
+        }
     }
 
     private func subscribeToViewModel() {
-        self.mapTapStateCancellable = self.viewModel.$currentMapTapState
+        mapTapStateCancellable = viewModel.$currentMapTapState
             .receive(on: DispatchQueue.main)
             .sink { [weak self] mapTapState in
                 self?.updateMapForTapState(mapTapState)
             }
 
-        self.primaryRouteDisplayingCancellable = self.viewModel.$routeMapPathGeometry
+        primaryRouteDisplayingCancellable = viewModel.$routeMapPathGeometry
             .receive(on: DispatchQueue.main)
             .sink { [weak self] pathSegments in
                 self?.updateMapWithPrimaryRoute(pathSegments)
             }
 
-        self.latestLocationCancellable = self.viewModel.$latestLocation
+        latestLocationCancellable = viewModel.$latestLocation
             .receive(on: DispatchQueue.main)
             .sink { [weak self] latestLocation in
                 guard let validLatestLocation = latestLocation,
@@ -224,38 +279,47 @@ final class MapListViewController: UIViewController {
                                         animated: true)
             }
 
-        self.instructionsCancellable = self.viewModel.$legProgress
+        listSpecsCancellable = viewModel.$listSpecs
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] legProgress in
-                self?.instructionsTableDataSource.nextInstructionProgress = legProgress?.nextInstructionProgress
-                self?.instructionsTableDataSource.subsequentInstructions = legProgress?.remainingInstructionsAfterNext ?? []
+            .sink { [weak self] listSpecs in
+                self?.instructionsTableDataSource.specs = listSpecs
                 self?.instructionsTableView.reloadSections(IndexSet(arrayLiteral: 0),
                                                            with: .automatic)
             }
 
-        self.latestGuidanceEventCancellable = self.viewModel.$guidanceEvent
+        latestGuidanceEventCancellable = viewModel.$guidanceEvent
             .receive(on: DispatchQueue.main)
             .sink { [weak self] newGuidanceEvent in
                 guard let guidanceEvent = newGuidanceEvent else { return }
 
                 let spokenMessage = guidanceEvent.createSpeechText()
-                _ = self?.speaker.speak(spokenMessage)
+                _ = self?.viewModel.speaker.speak(spokenMessage)
             }
 
-        self.latestErrorCancellable = self.viewModel.$latestError
+        latestErrorCancellable = viewModel.$latestError
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] latestError in
+            .sink { [weak self] possibleError in
 
-                guard let validError = latestError as NSError? else { return }
+                guard let latestError = possibleError else {
+                    return
+                }
+
+                var errorDescription: String?
+
+                if let guidanceError = latestError as? GuidanceFetcherError {
+                    errorDescription = guidanceError.errorDescription
+                } else if let validError = latestError as NSError? {
+                    errorDescription = validError.localizedDescription
+                }
 
                 let alert = UIAlertController(title: "Error",
-                                              message: validError.localizedDescription,
+                                              message: errorDescription,
                                               preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
                 self?.present(alert, animated: true, completion: nil)
             }
 
-        self.centerMapOnLocationUpdatesCancellable = self.viewModel.$centerMapOnLocationUpdates
+        centerMapOnLocationUpdatesCancellable = viewModel.$centerMapOnLocationUpdates
             .receive(on: DispatchQueue.main)
             .sink { [weak self] centerMapOnLocationUpdates in
                 if centerMapOnLocationUpdates,
@@ -265,23 +329,51 @@ final class MapListViewController: UIViewController {
                 }
             }
 
-        self.showMapResetButtonCancellable = self.viewModel.$showMapResetButton
+        showMapResetButtonCancellable = viewModel.$showMapResetButton
             .receive(on: DispatchQueue.main)
             .sink { [weak self] showMapResetButton in
                 self?.resetMapButton.isHidden = !showMapResetButton
                 self?.view.setNeedsLayout()
             }
 
-        self.showEndActiveNavigationButtonCancellable = self.viewModel.$showEndActiveNavigationButton
+        showEndActiveNavigationButtonCancellable = viewModel.$showEndActiveNavigationButton
             .receive(on: DispatchQueue.main)
             .sink { [weak self] showEndActiveNavigationButton in
                 self?.endActiveNavigationButton.isHidden = !showEndActiveNavigationButton
                 self?.view.setNeedsLayout()
-        }
+            }
+
+        currentApiCancellable = viewModel.$currentApi
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] currentApiString in
+                self?.apiSwitcher.setTitle(currentApiString, for: .normal)
+                self?.view.setNeedsLayout()
+            }
+
+        shouldShowProfileSwitcherCancellable = viewModel.$shouldShowProfileSwitcher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldShowProfileSwitcher in
+                self?.profileSwitcher.isHidden = !shouldShowProfileSwitcher
+                self?.view.setNeedsLayout()
+            }
+
+        currentBrandIdCancellable = viewModel.$currentBrandId
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] currentBrandId in
+                self?.brandIdButton.setTitle(currentBrandId ?? "Set brand id", for: .normal)
+                self?.view.setNeedsLayout()
+            }
+
+        shouldShowBrandIdButtonCancellable = viewModel.$shouldShowBrandIdButton
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] shouldShowBrandIdButton in
+                self?.brandIdButton.isHidden = !shouldShowBrandIdButton
+                self?.view.setNeedsLayout()
+            }
     }
 
     private func updateMapWithPrimaryRoute(_ pathSegments: [PathGeometrySegment]?) {
-        self.mapView.removeOverlays(self.mapView.overlays)
+        mapView.removeOverlays(mapView.overlays)
 
         guard let validPathSegments = pathSegments else {
             return
@@ -292,36 +384,36 @@ final class MapListViewController: UIViewController {
             let polyline = PathGeometryPolyline(coordinates: coordinates, count: coordinates.count)
             polyline.isPast = segment.pastOrFuture == PathGeometrySegment.PastOrFuture.past
             polyline.travelMode = segment.travelMode
-            self.mapView.addOverlay(polyline)
+            mapView.addOverlay(polyline)
         }
     }
 
     private func updateMapForTapState(_ mapTapState: MapListViewModel.MapTapState) {
-        self.mapView.removeAnnotations(self.mapView.annotations)
+        mapView.removeAnnotations(mapView.annotations)
 
         switch mapTapState {
         case .unknown:
             break
-        case .startAndEnd(let startCoords, let endCoords):
-            self.addMapAnnotation(coords: endCoords)
+        case let .startAndEnd(startCoords, endCoords):
+            addMapAnnotation(coords: endCoords)
         }
     }
 
     private func addMapAnnotation(coords: CLLocationCoordinate2D) {
         let annotation = MKPointAnnotation()
         annotation.coordinate = coords
-        self.mapView.addAnnotation(annotation)
+        mapView.addAnnotation(annotation)
     }
 
     @objc
     private func mapViewTapped(_ sender: UITapGestureRecognizer) {
         guard sender.state == .ended else { return }
 
-        let cgPointTappedOnMapView = sender.location(in: self.mapView)
-        let coordinate = self.mapView.convert(cgPointTappedOnMapView,
-                                              toCoordinateFrom: self.mapView)
+        let cgPointTappedOnMapView = sender.location(in: mapView)
+        let coordinate = mapView.convert(cgPointTappedOnMapView,
+                                         toCoordinateFrom: mapView)
 
-        self.viewModel.didTapMap(at: coordinate)
+        viewModel.didTapMap(at: coordinate)
     }
 
     private func shareLogsButtonTapped() {
@@ -339,14 +431,56 @@ final class MapListViewController: UIViewController {
         }
 
         let shareSheetController = UIActivityViewController(activityItems: [validLogFileUrl],
-                                                          applicationActivities: nil)
-        self.present(shareSheetController,
-                     animated: true,
-                     completion: nil)
+                                                            applicationActivities: nil)
+        present(shareSheetController,
+                animated: true,
+                completion: nil)
+    }
+
+    private func brandIdButtonTapped() {
+        let alertTitle = NSLocalizedString("Vehicle_Brand_Id_Alert_Title", comment: "The title of the alert shown when selecting a new vehicle brand id")
+
+        let brandIdController = UIAlertController(title: alertTitle,
+                                                  message: nil,
+                                                  preferredStyle: .alert)
+        brandIdController.addTextField { [weak self] textFieldToBeShown in
+            textFieldToBeShown.placeholder = self?.viewModel.currentBrandId
+        }
+
+        let okayTitle = NSLocalizedString("Okay_Button_Title", comment: "Okay button")
+        let okayAction = UIAlertAction(title: okayTitle,
+                                       style: .default) { [weak brandIdController, weak self] _ in
+            guard let validBrandIdController = brandIdController,
+                  let textField = validBrandIdController.textFields?.first
+            else {
+                return
+            }
+
+            self?.viewModel.didUpdateHireVehicleBrandId(to: textField.text)
+        }
+
+        let cancelTitle = NSLocalizedString("Cancel_Button_Title", comment: "Cancel button")
+        let cancelAction = UIAlertAction(title: cancelTitle,
+                                         style: .cancel) { _ in
+        }
+
+        brandIdController.addAction(okayAction)
+        brandIdController.addAction(cancelAction)
+
+        present(brandIdController,
+                animated: true,
+                completion: nil)
+    }
+
+    private func apiSwitcherButtonTapped() {
+        let apiSwitchScreen = viewModel.apiSelectionScreen()
+        present(apiSwitchScreen,
+                animated: true,
+                completion: nil)
     }
 
     private func resetMapButtonTapped() {
-        self.viewModel.didTapResetMap()
+        viewModel.didTapResetMap()
     }
 
     @objc
@@ -362,23 +496,21 @@ final class MapListViewController: UIViewController {
         default:
             profile = Profile.regular
         }
-        self.viewModel.setCurrentProfile(profile: profile)
-        self.viewModel.didTapEndActiveNavigation()
+        viewModel.setCurrentProfile(profile: profile)
+        viewModel.didTapEndActiveNavigation()
     }
 
     private func endActiveNavigationButtonTapped() {
-        self.viewModel.didTapEndActiveNavigation()
+        viewModel.didTapEndActiveNavigation()
     }
 }
 
 class PathGeometryPolyline: MKPolyline {
-
     var isPast: Bool = false
-    var travelMode: PathGeometrySegment.TravelMode? = nil
+    var travelMode: PathGeometrySegment.TravelMode?
 }
 
 extension MapListViewController: MKMapViewDelegate {
-
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         if let routePolyline = overlay as? MKPolyline {
             let polylineRenderer = MKPolylineRenderer(polyline: routePolyline)
@@ -396,13 +528,13 @@ extension MapListViewController: MKMapViewDelegate {
     }
 
     func mapView(_ mapView: MKMapView, regionWillChangeAnimated animated: Bool) {
-        if self.mapViewRegionDidChangeFromUserInteraction() {
-            self.viewModel.userDidInteractWithMap()
+        if mapViewRegionDidChangeFromUserInteraction() {
+            viewModel.userDidInteractWithMap()
         }
     }
 
     private func mapViewRegionDidChangeFromUserInteraction() -> Bool {
-        guard let view = self.mapView.subviews.first,
+        guard let view = mapView.subviews.first,
               let gestureRecognizers = view.gestureRecognizers
         else {
             return false
@@ -410,7 +542,7 @@ extension MapListViewController: MKMapViewDelegate {
 
         for recognizer in gestureRecognizers {
             if (recognizer.state == UIGestureRecognizer.State.began)
-                 || (recognizer.state == UIGestureRecognizer.State.ended) {
+                || (recognizer.state == UIGestureRecognizer.State.ended) {
                 return true
             }
         }
@@ -420,88 +552,20 @@ extension MapListViewController: MKMapViewDelegate {
 }
 
 final class InstructionsTableDataSource: NSObject, UITableViewDataSource {
-
-    var nextInstructionProgress: InstructionProgress? = nil
-    var subsequentInstructions = [InstructionSegment]()
+    var specs = [TableCellSpec]()
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if (nextInstructionProgress == nil) {
-            return 0
-        } else {
-            return self.subsequentInstructions.count + 1
-        }
+        specs.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
-        guard let nextInstructionProgress = nextInstructionProgress,
-            self.subsequentInstructions.count + 1 > indexPath.row else {
-            return UITableViewCell()
-        }
-
-        let instruction: Instruction
-        let distance: Distance?
-        let duration: Duration?
-        if (indexPath.row == 0) {
-            instruction = nextInstructionProgress.instruction
-            distance = nextInstructionProgress.distanceUntilInstruction
-            duration = nextInstructionProgress.durationUntilInstruction
-        } else {
-            let instructionSegment = self.subsequentInstructions[indexPath.row - 1]
-            instruction = instructionSegment.endInstruction
-            distance = instructionSegment.distance
-            duration = instructionSegment.duration
-        }
-
-        let cell = UITableViewCell()
-        cell.textLabel?.numberOfLines = 0
-        cell.textLabel?.attributedText = self.attributedText(from: instruction,
-                                                             distance: distance,
-                                                             duration: duration)
-        cell.backgroundColor = .white
-        return cell
-    }
-
-    private func attributedText(from instruction: Instruction,
-                                distance: Distance?,
-                                duration: Duration?) -> NSAttributedString {
-
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.alignment = NSTextAlignment.left
-
-        let boldTextAttributes = [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 20, weight: .bold),
-            NSAttributedString.Key.foregroundColor: UIColor.black,
-            NSAttributedString.Key.paragraphStyle: paragraphStyle
-        ]
-
-        guard !instruction.isDepart else {
-            return NSAttributedString(string: instruction.descriptionText,
-                                      attributes: boldTextAttributes)
-        }
-
-        let lightTextAttributes = [
-            NSAttributedString.Key.font: UIFont.systemFont(ofSize: 20, weight: .light),
-            NSAttributedString.Key.foregroundColor: UIColor.systemBlue,
-            NSAttributedString.Key.paragraphStyle: paragraphStyle
-        ]
-
-        let attributedInstructionText = NSAttributedString(string: "\n\(instruction.descriptionText)",
-                                                           attributes: lightTextAttributes)
-
-        let localisedMetersText = NSLocalizedString("Visual_Instruction_Meters_Format", comment: "Describes the number of meters until an instruction")
-        let metersValueString = distance.flatMap { "\(Int(round($0.inMeters)))" } ?? ""
-        let completedText = NSMutableAttributedString(string: String(format: localisedMetersText,
-                                                                     metersValueString),
-                                                      attributes: boldTextAttributes)
-
-        completedText.append(attributedInstructionText)
-        return completedText
+        TableViewUtils.tableView(tableView,
+                                 cellForRowAt: indexPath,
+                                 specs: specs)
     }
 }
 
 final class InstructionsTableDelegate: NSObject, UITableViewDelegate {
-
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
     }

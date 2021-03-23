@@ -7,7 +7,6 @@ import UIKit
 import Combine
 
 class LocationPermissionViewController: UIViewController {
-
     private var viewModel: LocationPermissionViewModel
     private var screenStateCancellable: AnyCancellable?
 
@@ -34,6 +33,7 @@ class LocationPermissionViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
 
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -41,86 +41,86 @@ class LocationPermissionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        self.isModalInPresentation = true
+        isModalInPresentation = true
 
-        self.view.backgroundColor = .white
-        self.view.addSubview(self.loadingSpinner)
-        self.view.addSubview(self.grantLocationPermissionButton)
+        view.backgroundColor = .white
+        view.addSubview(loadingSpinner)
+        view.addSubview(grantLocationPermissionButton)
 
-        self.subscribeToViewModel()
+        subscribeToViewModel()
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        if !self.grantLocationPermissionButton.isHidden {
+        if !grantLocationPermissionButton.isHidden {
             let horizontalMargin: CGFloat = 15
-            let buttonWidth = self.view.bounds.width - (horizontalMargin + horizontalMargin)
-            let buttonHeight = self.grantLocationPermissionButton
-                                    .sizeThatFits(CGSize(width: buttonWidth,
-                                                         height: .greatestFiniteMagnitude)).height
+            let buttonWidth = view.bounds.width - (horizontalMargin + horizontalMargin)
+            let buttonHeight = grantLocationPermissionButton
+                .sizeThatFits(CGSize(width: buttonWidth,
+                                     height: .greatestFiniteMagnitude)).height
 
-            self.grantLocationPermissionButton.frame.size = CGSize(width: buttonWidth,
-                                                                   height: buttonHeight)
-            self.grantLocationPermissionButton.center = CGPoint(x: self.view.bounds.midX,
-                                                                y: self.view.bounds.midY)
+            grantLocationPermissionButton.frame.size = CGSize(width: buttonWidth,
+                                                              height: buttonHeight)
+            grantLocationPermissionButton.center = CGPoint(x: view.bounds.midX,
+                                                           y: view.bounds.midY)
         }
 
-        self.loadingSpinner.center = CGPoint(x: self.view.bounds.midX,
-                                             y: self.view.bounds.midY)
+        loadingSpinner.center = CGPoint(x: view.bounds.midX,
+                                        y: view.bounds.midY)
     }
 
     private func showLoading(_ loadingVisible: Bool) {
         if loadingVisible {
-            self.grantLocationPermissionButton.isHidden = true
-            self.loadingSpinner.startAnimating()
+            grantLocationPermissionButton.isHidden = true
+            loadingSpinner.startAnimating()
         } else {
-            self.loadingSpinner.stopAnimating()
-            self.grantLocationPermissionButton.isHidden = false
+            loadingSpinner.stopAnimating()
+            grantLocationPermissionButton.isHidden = false
         }
     }
 
     private func subscribeToViewModel() {
-        self.screenStateCancellable = self.viewModel.$currentLocationPermissionScreenState
+        screenStateCancellable = viewModel.$currentLocationPermissionScreenState
             .receive(on: DispatchQueue.main)
             .sink { [weak self] screenState in
 
-            guard let strongSelf = self else { return }
-                
-            strongSelf.grantLocationPermissionButton.removeTarget(nil, action: nil, for: .allEvents)
+                guard let strongSelf = self else { return }
 
-            switch screenState {
-            case .loading:
-                strongSelf.showLoading(true)
-            case .needsLocationPermission(canRequestInApp: let canRequestInApp, buttonTitle: let buttonTitle):
-                strongSelf.showLoading(false)
-                strongSelf.grantLocationPermissionButton.setTitle(buttonTitle, for: .normal)
-                
-                let buttonAction: UIAction
-                
-                if canRequestInApp {
-                    buttonAction = strongSelf.primaryButtonAction(with: { [weak self] (_) in
-                        self?.enableLocationInAppTapped()
-                    })
-                } else {
-                    buttonAction = strongSelf.primaryButtonAction(with: { [weak self] (_) in
-                        self?.enableLocationInSettingsTapped()
-                    })
-                }
-                
-                strongSelf.grantLocationPermissionButton.addAction(buttonAction,
-                                                                   for: .touchUpInside)
-            case .locationGrantedAndTracking(buttonTitle: let buttonTitle):
-                strongSelf.showLoading(false)
-                strongSelf.grantLocationPermissionButton.setTitle(buttonTitle, for: .normal)
+                strongSelf.grantLocationPermissionButton.removeTarget(nil, action: nil, for: .allEvents)
 
-                let buttonAction = strongSelf.primaryButtonAction { [weak self] (_) in
-                    self?.dismissScreen()
+                switch screenState {
+                case .loading:
+                    strongSelf.showLoading(true)
+                case let .needsLocationPermission(canRequestInApp: canRequestInApp, buttonTitle: buttonTitle):
+                    strongSelf.showLoading(false)
+                    strongSelf.grantLocationPermissionButton.setTitle(buttonTitle, for: .normal)
+
+                    let buttonAction: UIAction
+
+                    if canRequestInApp {
+                        buttonAction = strongSelf.primaryButtonAction(with: { [weak self] _ in
+                            self?.enableLocationInAppTapped()
+                        })
+                    } else {
+                        buttonAction = strongSelf.primaryButtonAction(with: { [weak self] _ in
+                            self?.enableLocationInSettingsTapped()
+                        })
+                    }
+
+                    strongSelf.grantLocationPermissionButton.addAction(buttonAction,
+                                                                       for: .touchUpInside)
+                case let .locationGrantedAndTracking(buttonTitle: buttonTitle):
+                    strongSelf.showLoading(false)
+                    strongSelf.grantLocationPermissionButton.setTitle(buttonTitle, for: .normal)
+
+                    let buttonAction = strongSelf.primaryButtonAction { [weak self] _ in
+                        self?.dismissScreen()
+                    }
+                    strongSelf.grantLocationPermissionButton.addAction(buttonAction,
+                                                                       for: .touchUpInside)
                 }
-                strongSelf.grantLocationPermissionButton.addAction(buttonAction,
-                                                                   for: .touchUpInside)
             }
-        }
     }
 
     private func primaryButtonAction(with handler: @escaping UIActionHandler) -> UIAction {
@@ -131,7 +131,7 @@ class LocationPermissionViewController: UIViewController {
     }
 
     private func enableLocationInAppTapped() {
-        self.viewModel.enableLocationInAppTapped()
+        viewModel.enableLocationInAppTapped()
     }
 
     private func enableLocationInSettingsTapped() {
@@ -143,6 +143,6 @@ class LocationPermissionViewController: UIViewController {
     }
 
     private func dismissScreen() {
-        self.dismiss(animated: true, completion: nil)
+        dismiss(animated: true, completion: nil)
     }
 }

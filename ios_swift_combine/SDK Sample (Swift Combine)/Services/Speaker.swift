@@ -2,12 +2,11 @@
 //  Speaker.swift
 //
 
-
 import Foundation
 
 import AVFoundation
-import Foundation
 import CallKit
+import Foundation
 
 /// This protocol is used to generate speech
 protocol Speaker {
@@ -17,7 +16,6 @@ protocol Speaker {
 }
 
 class SpeakerConcrete: NSObject, Speaker {
-
     fileprivate var synth = AVSpeechSynthesizer()
 
     override init() {
@@ -26,8 +24,7 @@ class SpeakerConcrete: NSObject, Speaker {
     }
 
     func speak(_ text: String) -> Error? {
-
-        guard !self.isOnPhoneCall() else {
+        guard !isOnPhoneCall() else {
             return NSError(domain: "SpeakerConcreteUserOnPhoneCallErrorDomain",
                            code: 0,
                            userInfo: [NSLocalizedDescriptionKey: "Voice blocked by phone call."])
@@ -77,7 +74,6 @@ class SpeakerConcrete: NSObject, Speaker {
 }
 
 extension SpeakerConcrete: AVSpeechSynthesizerDelegate {
-
     func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
         guard !synthesizer.isSpeaking else {
             return

@@ -2,11 +2,6 @@
 .gradle
 /local.properties
 .idea/*
-!/.idea/codeStyles
-!/.idea/inspectionProfiles
-!/.idea/vcs.xml
-!/.idea/misc.xml
-!/.idea/encodings.xml
 .DS_Store
 /build
 /captures

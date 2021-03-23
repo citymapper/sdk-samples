@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-parcelize'
 
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
@@ -26,7 +27,6 @@ android {
     }
 
     buildTypes {
-
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -48,12 +48,13 @@ android {
 }
 
 dependencies {
-    implementation 'com.citymapper.sdk:citymapper-navigation:0.3.0'
+    implementation 'com.citymapper.sdk:citymapper-navigation:0.4.0'
 
     implementation deps.androidx.core
     implementation deps.androidx.activity
     implementation deps.androidx.appcompat
     implementation deps.androidx.constraintlayout
+    implementation deps.androidx.datastore
     implementation deps.androidx.lifecycle.viewmodel
     implementation deps.compose.runtime
     implementation deps.compose.runtimeLivedata

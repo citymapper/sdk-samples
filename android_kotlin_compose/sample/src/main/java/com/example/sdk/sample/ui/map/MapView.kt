@@ -18,6 +18,7 @@ fun <T> MapView(
   position: MapCameraPosition?,
   mapContent: T,
   onMapClick: (LatLng) -> Unit = {},
+  onMapLongClick: (LatLng) -> Unit = {},
   setupMap: GoogleMap.() -> Unit = {},
   renderContent: GoogleMap.(Context, T) -> Unit
 ) {
@@ -26,7 +27,7 @@ fun <T> MapView(
   // composable. In this way, when an update to the MapView happens, this composable won't
   // recompose and the MapView won't need to be recreated.
   val mapView = rememberMapViewWithLifecycle()
-  MapViewContainer(mapView, position, mapContent, onMapClick, setupMap, renderContent)
+  MapViewContainer(mapView, position, mapContent, onMapClick, onMapLongClick, setupMap, renderContent)
 }
 
 @SuppressLint("MissingPermission")
@@ -36,12 +37,14 @@ private fun <T> MapViewContainer(
   position: MapCameraPosition?,
   mapContent: T,
   onMapClick: (LatLng) -> Unit,
+  onMapLongClick: (LatLng) -> Unit,
   setupMap: GoogleMap.() -> Unit,
   renderContent: GoogleMap.(Context, T) -> Unit
 ) {
   AndroidView({ map }) { mapView ->
     mapView.getMapAsync { googleMap ->
       setupMap(googleMap)
+      googleMap.setOnMapLongClickListener { onMapLongClick(it) }
       googleMap.setOnMapClickListener { onMapClick(it) }
     }
   }

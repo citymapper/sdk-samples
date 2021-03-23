@@ -20,6 +20,17 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
+        <meta-data
+            android:name="com.citymapper.sdk.notification_title"
+            android:value="@string/notification_title" />
+
+        <meta-data
+            android:name="com.citymapper.sdk.notification_channel"
+            android:value="GO Notification" />
+
+        <meta-data
+            android:name="com.citymapper.sdk.notification_icon"
+            android:resource="@drawable/ic_stat" />
 
         <meta-data
             android:name="com.citymapper.sdk.configuration_provider"

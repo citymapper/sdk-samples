@@ -8,7 +8,6 @@ import Combine
 import CoreLocation
 
 class LocationManager: NSObject {
-
     private let locationManagerReadyQueue: OperationQueue = {
         let queue = OperationQueue()
         queue.maxConcurrentOperationCount = 1
@@ -39,7 +38,7 @@ class LocationManager: NSObject {
     }
 
     func requestWhenInUseLocationPermission() {
-        self.performWhenSystemLocationManagerReady { [weak self] in
+        performWhenSystemLocationManagerReady { [weak self] in
             self?.internalLocationManager?.requestWhenInUseAuthorization()
         }
     }
@@ -56,22 +55,22 @@ class LocationManager: NSObject {
     }
 
     func startUpdatingLocation() {
-        self.performWhenSystemLocationManagerReady { [weak self] in
+        performWhenSystemLocationManagerReady { [weak self] in
             self?.internalLocationManager?.startUpdatingLocation()
         }
     }
 
     func stopUpdatingLocation() {
-        self.performWhenSystemLocationManagerReady { [weak self] in
+        performWhenSystemLocationManagerReady { [weak self] in
             self?.internalLocationManager?.stopUpdatingLocation()
         }
     }
 
     private func performWhenSystemLocationManagerReady(_ block: @escaping () -> Void) {
-        if self.internalLocationManager != nil {
+        if internalLocationManager != nil {
             block()
         } else {
-            self.locationManagerReadyQueue.addOperation {
+            locationManagerReadyQueue.addOperation {
                 block()
             }
         }
@@ -79,15 +78,14 @@ class LocationManager: NSObject {
 }
 
 extension LocationManager: CLLocationManagerDelegate {
-
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let mostRecentLocationUpdate = locations.last else { return }
 
-        self.mostRecentLocation = mostRecentLocationUpdate
+        mostRecentLocation = mostRecentLocationUpdate
     }
 
     func locationManager(_ manager: CLLocationManager,
                          didChangeAuthorization status: CLAuthorizationStatus) {
-        self.authorizationStatus = status
+        authorizationStatus = status
     }
 }

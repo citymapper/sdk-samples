@@ -1,5 +1,5 @@
 use_frameworks!
 
 target 'SDK Sample (Swift Combine)' do
-   pod 'CitymapperNavigation', '0.3.0'
+   pod 'CitymapperNavigation', '0.4.0'
 end

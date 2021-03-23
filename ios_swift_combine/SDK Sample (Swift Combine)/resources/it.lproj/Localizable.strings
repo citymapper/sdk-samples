@@ -8,7 +8,7 @@
 "Enable_Location_Button_Title" = "Abilita geolocalizzazione";
 
 /* The title of the button used to dismiss the location permissions screen */
-"Dismiss_Location_Permission_Screen_Button_Title" = "Fatto";
+"Dismiss_And_Save_Modal_Screen_Button_Title" = "Fatto";
 
 /* Visual instructions: format for a turn instruction that's coming up in a certain distance in meters
  %@ is replaced with the distance in meters (e.g. "15") */

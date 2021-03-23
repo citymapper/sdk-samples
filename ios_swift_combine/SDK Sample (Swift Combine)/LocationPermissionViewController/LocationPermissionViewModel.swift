@@ -8,7 +8,6 @@ import Combine
 import CoreLocation
 
 class LocationPermissionViewModel: NSObject {
-
     enum LocationPermissionScreenState {
         case loading
         case needsLocationPermission(canRequestInApp: Bool, buttonTitle: String)
@@ -24,22 +23,22 @@ class LocationPermissionViewModel: NSObject {
         self.locationManager = locationManager
         super.init()
 
-        self.subscribeToLocationManager()
+        subscribeToLocationManager()
     }
 
     func enableLocationInAppTapped() {
-        self.currentLocationPermissionScreenState = .loading
-        self.locationManager.requestWhenInUseLocationPermission()
+        currentLocationPermissionScreenState = .loading
+        locationManager.requestWhenInUseLocationPermission()
     }
 
     private func subscribeToLocationManager() {
-        self.authorizationStatusCancellable = self.locationManager.$authorizationStatus
+        authorizationStatusCancellable = locationManager.$authorizationStatus
             .sink { [weak self] authorizationStatus in
                 guard let strongSelf = self else { return }
 
                 let canRequestLocationPermissionInApp = strongSelf.ableToRequestLocationPermissionInApp(with: authorizationStatus)
                 let needsLocationPermission = ((authorizationStatus != .authorizedAlways)
-                                                && (authorizationStatus != .authorizedWhenInUse))
+                    && (authorizationStatus != .authorizedWhenInUse))
 
                 if needsLocationPermission {
                     strongSelf.locationManager.stopUpdatingLocation()
@@ -51,19 +50,18 @@ class LocationPermissionViewModel: NSObject {
                     strongSelf.locationManager.startUpdatingLocation()
                     strongSelf.currentLocationPermissionScreenState = .locationGrantedAndTracking(buttonTitle: strongSelf.locationGrantedButtonTitle())
                 }
-        }
+            }
     }
 
     private func allowLocationButtonTitle(canRequestInApp: Bool) -> String {
-        return NSLocalizedString("Enable_Location_Button_Title", comment: "The title of the button used to grant location permissions")
+        NSLocalizedString("Enable_Location_Button_Title", comment: "The title of the button used to grant location permissions")
     }
 
     private func locationGrantedButtonTitle() -> String {
-        return NSLocalizedString("Dismiss_Location_Permission_Screen_Button_Title", comment: "The title of the button used to dismiss the location permissions screen")
+        NSLocalizedString("Dismiss_And_Save_Modal_Screen_Button_Title", comment: "The title of the button used to dismiss the location permissions screen")
     }
 
     private func ableToRequestLocationPermissionInApp(with status: CLAuthorizationStatus?) -> Bool {
-
         guard let validAuthorizationStatus = status else { return false }
 
         switch validAuthorizationStatus {
@@ -79,5 +77,4 @@ class LocationPermissionViewModel: NSObject {
             return false
         }
     }
-
 }

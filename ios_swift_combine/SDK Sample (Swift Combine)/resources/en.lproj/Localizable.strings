@@ -7,9 +7,28 @@
 /* The title of the button used to grant location permissions" */
 "Enable_Location_Button_Title" = "Enable Location";
 
-/* The title of the button used to dismiss the location permissions screen */
-"Dismiss_Location_Permission_Screen_Button_Title" = "Done";
+/* The title of the button used to dismiss the location permissions and api selection modal screens */
+"Dismiss_And_Save_Modal_Screen_Button_Title" = "Done";
 
 /* Visual instructions: format for a turn instruction that's coming up in a certain distance in meters
  %@ is replaced with the distance in meters (e.g. "15") */
 "Visual_Instruction_Meters_Format" = "In %@ m";
+
+/**** Setting Vehicle Brand Id ****/
+
+/* The title of the alert shown when selecting a new vehicle brand id */
+"Vehicle_Brand_Id_Alert_Title" = "Enter Vehicle Brand Id";
+
+/* Okay button title */
+"Okay_Button_Title" = "Okay";
+
+/* Cancel button title */
+"Cancel_Button_Title" = "Cancel";
+
+/**** Instructions List ****/
+
+/* Okay button title */
+"Unlock_Button_Title" = "Unlock";
+
+/* Cancel button title */
+"Lock_Button_Title" = "Lock";

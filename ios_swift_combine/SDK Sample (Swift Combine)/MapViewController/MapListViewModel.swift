@@ -36,7 +36,7 @@ final class MapListViewModel {
     private let vehicleActivityManager: VehicleActivityManager
 
     @Published var primaryRouteDisplaying: Route?
-    @Published var routeMapPathGeometry: [PathGeometrySegment]?
+    @Published var routeMapPathGeometry: PathGeometrySegments?
     @Published var alternateInactiveRoutes: [Route] = []
     @Published var latestLocation: CLLocation?
 

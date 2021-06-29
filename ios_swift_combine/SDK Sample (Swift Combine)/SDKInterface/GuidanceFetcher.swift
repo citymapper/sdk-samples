@@ -16,7 +16,7 @@ final class GuidanceFetcher: NSObject {
     @Published var legProgress: LegProgress? = nil
     @Published var guidanceEvent: GuidanceEvent? = nil
 
-    @Published var routePathSegments: [PathGeometrySegment]?
+    @Published var routePathSegments: PathGeometrySegments?
 
     @Published var latestError: Error?
 

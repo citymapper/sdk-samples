@@ -28,7 +28,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -43,34 +43,33 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion versions.compose
+        kotlinCompilerExtensionVersion libs.versions.compose.get()
+    }
+
+    packagingOptions {
+        pickFirst 'META-INF/AL2.0'
+        pickFirst 'META-INF/LGPL2.1'
     }
 }
 
 dependencies {
-    implementation 'com.citymapper.sdk:citymapper-navigation:0.4.1'
+    implementation 'com.citymapper.sdk:citymapper-navigation:1.0.0'
 
-    implementation deps.androidx.core
-    implementation deps.androidx.activity
-    implementation deps.androidx.appcompat
-    implementation deps.androidx.constraintlayout
-    implementation deps.androidx.datastore
-    implementation deps.androidx.lifecycle.viewmodel
-    implementation deps.compose.runtime
-    implementation deps.compose.runtimeLivedata
-    implementation deps.compose.foundation
-    implementation deps.compose.material
-    implementation deps.compose.layout
-    implementation deps.compose.animation
-    implementation deps.compose.uiTooling
+    implementation libs.androidx.core
+    implementation libs.androidx.activity
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.constraintlayout
+    implementation libs.androidx.datastore
+    implementation libs.androidx.lifecycle.viewmodel.compose
+    implementation libs.bundles.compose
 
-    implementation deps.kotlin.coroutines.playServices
+    implementation libs.kotlin.coroutines.playServices
 
-    implementation deps.googleMaps
-    implementation deps.gms.location
+    implementation libs.googleMaps
+    implementation libs.gms.location
 
-    testImplementation deps.junit
-    androidTestImplementation deps.androidx.test.junit
-    androidTestImplementation deps.androidx.test.espresso
+    testImplementation libs.junit
+    androidTestImplementation libs.androidx.test.junit
+    androidTestImplementation libs.androidx.test.espresso
 
 }

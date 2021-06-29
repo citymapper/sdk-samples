@@ -60,6 +60,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.math.ceil
 import kotlin.math.roundToInt
 import kotlin.time.Duration
+import kotlin.time.DurationUnit
 import kotlin.time.minutes
 import kotlinx.coroutines.launch
 
@@ -106,7 +107,7 @@ fun PreviewContainer(route: Route, startGo: () -> Unit) {
         ) {
           val minutes = route.legs
             .fold(Duration.ZERO) { acc, leg -> acc + (leg.travelDuration ?: Duration.ZERO) }
-            .let { ceil(it.inMinutes).roundToInt() }
+            .let { ceil(it.toDouble(DurationUnit.MINUTES)).roundToInt() }
 
           Text(
             modifier = Modifier.width(56.dp),
@@ -217,8 +218,8 @@ fun InstructionRow(instruction: Instruction, distance: Distance?, duration: Dura
 
       val durationText = when {
         duration == null -> ""
-        duration < 1.minutes -> "< 1 min"
-        else -> "${ceil(duration.inMinutes).toInt()} min"
+        duration < Duration.minutes(1) -> "< 1 min"
+        else -> "${ceil(duration.toDouble(DurationUnit.MINUTES)).toInt()} min"
       }
 
       Text(
@@ -312,7 +313,7 @@ fun ProfileChooser(currentProfile: Profile, profileCallback: (Profile) -> Unit) 
   val showMenu = remember { mutableStateOf(false) }
   Box {
     TextButton(onClick = { showMenu.value = true }) {
-      Text(text = "Profile: ${currentProfile.string}")
+      Text(text = "Profile: $currentProfile")
     }
 
     DropdownMenu(
@@ -474,4 +475,4 @@ private fun Leg.description(): String {
   }
 }
 
-private fun VehicleType.description() = name.toLowerCase(Locale.getDefault())
+private fun VehicleType.description() = name.lowercase(Locale.getDefault())

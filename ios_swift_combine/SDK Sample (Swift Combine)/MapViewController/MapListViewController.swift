@@ -33,13 +33,13 @@ final class MapListViewController: UIViewController {
 
     private lazy var profileSwitcher: UISegmentedControl = {
         let segmentedControl = UISegmentedControl(frame: .zero)
-        segmentedControl.insertSegment(withTitle: Profile.quiet.rawValue,
+        segmentedControl.insertSegment(withTitle: "Quiet",
                                        at: 0,
                                        animated: false)
-        segmentedControl.insertSegment(withTitle: Profile.regular.rawValue,
+        segmentedControl.insertSegment(withTitle: "Regular",
                                        at: 1,
                                        animated: false)
-        segmentedControl.insertSegment(withTitle: Profile.fast.rawValue,
+        segmentedControl.insertSegment(withTitle: "Fast",
                                        at: 2,
                                        animated: false)
         segmentedControl.selectedSegmentIndex = 1
@@ -372,7 +372,7 @@ final class MapListViewController: UIViewController {
             }
     }
 
-    private func updateMapWithPrimaryRoute(_ pathSegments: [PathGeometrySegment]?) {
+    private func updateMapWithPrimaryRoute(_ pathSegments: PathGeometrySegments?) {
         mapView.removeOverlays(mapView.overlays)
 
         guard let validPathSegments = pathSegments else {
@@ -419,14 +419,10 @@ final class MapListViewController: UIViewController {
     private func shareLogsButtonTapped() {
         let citymapperNav = CitymapperNavigationTracking.shared
 
-        guard citymapperNav.navigationLogExists() else {
+        guard let validLogFileUrl = citymapperNav.currentNavigationLogFileUrl() else {
 #if DEBUG
             NSLog("No logs available")
 #endif // DEBUG
-            return
-        }
-
-        guard let validLogFileUrl = citymapperNav.currentNavigationLogFileUrl() else {
             return
         }
 

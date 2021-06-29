@@ -5,6 +5,7 @@ import androidx.compose.material.Colors
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.graphics.ColorUtils
 import com.citymapper.sdk.navigation.ui.PathGeometrySegment
+import com.citymapper.sdk.navigation.ui.PathGeometrySegments
 import com.example.sdk.sample.utils.asLatLng
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
@@ -29,7 +30,7 @@ fun GoogleMap.renderMarker(
 
 fun GoogleMap.renderRoute(
   context: Context,
-  pathSegments: List<PathGeometrySegment>?,
+  pathSegments: PathGeometrySegments?,
   colors: Colors
 ) {
   if (pathSegments == null) {

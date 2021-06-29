@@ -63,7 +63,7 @@ private fun rememberMapLifecycleObserver(mapView: MapView): LifecycleEventObserv
         Lifecycle.Event.ON_PAUSE -> mapView.onPause()
         Lifecycle.Event.ON_STOP -> mapView.onStop()
         Lifecycle.Event.ON_DESTROY -> mapView.onDestroy()
-        else -> throw IllegalStateException()
+        else -> throw AssertionError()
       }
     }
   }

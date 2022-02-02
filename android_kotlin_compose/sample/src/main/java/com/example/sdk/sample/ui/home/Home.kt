@@ -56,12 +56,11 @@ import com.example.sdk.sample.ui.common.SampleButton
 import com.example.sdk.sample.ui.common.SampleCard
 import com.example.sdk.sample.utils.requestLocationPermission
 import java.util.Locale
-import java.util.concurrent.TimeUnit
 import kotlin.math.ceil
 import kotlin.math.roundToInt
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.DurationUnit
-import kotlin.time.minutes
 import kotlinx.coroutines.launch
 
 @Composable
@@ -94,7 +93,7 @@ fun PreviewContainer(route: Route, startGo: () -> Unit) {
             val distance = path.totalDistance
 
             val meters = distance.inMeters.roundToInt()
-            val minutes = "${leg.travelDuration?.toInt(TimeUnit.MINUTES) ?: 0} min"
+            val minutes = "${leg.travelDuration?.toInt(DurationUnit.MINUTES) ?: 0} min"
             Text(
               text = "${leg.description()} for $minutes ($meters meters)",
               style = MaterialTheme.typography.caption
@@ -218,7 +217,7 @@ fun InstructionRow(instruction: Instruction, distance: Distance?, duration: Dura
 
       val durationText = when {
         duration == null -> ""
-        duration < Duration.minutes(1) -> "< 1 min"
+        duration < 1.minutes -> "< 1 min"
         else -> "${ceil(duration.toDouble(DurationUnit.MINUTES)).toInt()} min"
       }
 

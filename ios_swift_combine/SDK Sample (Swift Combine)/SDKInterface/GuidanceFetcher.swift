@@ -78,16 +78,16 @@ final class GuidanceFetcher: NSObject {
         latestError = GuidanceFetcherError(title)
     }
 
-    private func startNavigatingCompletion(result: ApiResult<DirectionsResults>) {
+    private func startNavigatingCompletion(result: ApiResult<DirectionsResults, DirectionsError>) {
         switch result {
         case let .failure(error):
-            latestError = error
+            latestError = getGuidanceFetcherError(failure: error)
         case let .success(results):
             guard let route = results.routes.first else {
                 return
             }
-            CitymapperNavigationTracking.shared.routeProgressDelegate = self
-            CitymapperNavigationTracking.shared.guidanceEventDelegate = self
+            CitymapperNavigationTracking.shared.addRouteProgressObserver(observer: self)
+            CitymapperNavigationTracking.shared.addGuidanceEventObserver(observer: self)
 
             let trackingConfiguration = TrackingConfiguration(enableOnDeviceLogging: true)
             CitymapperNavigationTracking.shared.startNavigation(route: route,
@@ -98,6 +98,28 @@ final class GuidanceFetcher: NSObject {
                 default: break
                 }
             }
+        }
+    }
+
+    private func getGuidanceFetcherError(failure: ApiFailure<DirectionsError>) -> GuidanceFetcherError {
+        switch failure {
+        case .networkFailure:
+            return GuidanceFetcherError("Network Error")
+        case let .httpFailure(code: code, error):
+            if let error = error {
+                switch error {
+                case .noRoutesFound(message: _):
+                    return GuidanceFetcherError("No routes found")
+                case .startOrEndOutOfCoverage(message: _):
+                    return GuidanceFetcherError("Outside coverage")
+                case .unknown(message: _):
+                    return GuidanceFetcherError("Unknown error")
+                }
+            } else {
+                return GuidanceFetcherError("HTTP \(code)")
+            }
+        case .unknownFailure:
+            return GuidanceFetcherError("Unknown error")
         }
     }
 
@@ -114,7 +136,7 @@ final class GuidanceFetcher: NSObject {
     }
 }
 
-extension GuidanceFetcher: RouteProgressDelegate {
+extension GuidanceFetcher: RouteProgressObserver {
     func routeProgressUpdated(routeProgress: RouteProgress?) {
         activeRoute = routeProgress?.route
         legProgress = routeProgress?.legProgress
@@ -122,8 +144,8 @@ extension GuidanceFetcher: RouteProgressDelegate {
     }
 }
 
-extension GuidanceFetcher: GuidanceEventDelegate {
-    func triggerGuidanceEvent(_ guidanceEvent: GuidanceEvent) {
+extension GuidanceFetcher: GuidanceEventObserver {
+    func guidanceEventTriggered(_ guidanceEvent: GuidanceEvent) {
         self.guidanceEvent = guidanceEvent
     }
 }

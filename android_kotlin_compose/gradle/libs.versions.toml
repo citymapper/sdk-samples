@@ -1,17 +1,26 @@
 [versions]
-kotlin = "1.5.10"
-coroutines = '1.5.0'
-compose = "1.0.0-beta09"
+kotlin = "1.6.10"
+coroutines = '1.6.0'
+compose = "1.0.5"
+# Note when updating the compose compiler, remove suppressKotlinVersionCompatibilityCheck in build.gradle
+composeCompiler = "1.1.0-rc03" # Compiler often uses alpha/beta to for newer Kotlin versions
 lifecycle = "2.3.1"
+espresso = "3.3.0"
+
+[plugins]
+shadow = { id = "com.github.johnrengelman.shadow", version = "7.1.1" }
+googleServices = { id = "com.google.gms.google-services", version = "4.3.10" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version = "2.8.1" }
 
 [libraries]
-androidGradlePlugin = "com.android.tools.build:gradle:7.0.0-beta04"
-kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+agp = "com.android.tools.build:gradle:7.0.3"
+kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlin-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 kotlin-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutines" }
 kotlin-coroutines-playServices = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "coroutines" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 compose-runtime = { module = "androidx.compose.runtime:runtime", version.ref = "compose" }
 compose-runtimeLivedata = { module = "androidx.compose.runtime:runtime-livedata", version.ref = "compose" }
 compose-material = { module = "androidx.compose.material:material", version.ref = "compose" }
@@ -22,26 +31,32 @@ compose-animation = { module = "androidx.compose.animation:animation", version.r
 compose-uiTest = { module = "androidx.compose.ui:ui-test", version.ref = "compose" }
 compose-uiTooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
 compose-uiViewbinding = { module = "androidx.compose.ui:ui-viewbinding", version.ref = "compose" }
-androidx-core = "androidx.core:core-ktx:1.5.0"
-androidx-activity = 'androidx.activity:activity-compose:1.3.0-beta02'
-androidx-fragment = 'androidx.fragment:fragment-ktx:1.3.5'
+androidx-core = "androidx.core:core-ktx:1.6.0"
+androidx-activity = 'androidx.activity:activity-compose:1.3.1'
+androidx-fragment = 'androidx.fragment:fragment-ktx:1.3.6'
+androidx-fragment-testing = 'androidx.fragment:fragment-testing:1.3.6'
 androidx-annotation = "androidx.annotation:annotation:1.2.0"
-androidx-appcompat = "androidx.appcompat:appcompat:1.3.0"
-androidx-appcompatResources = "androidx.appcompat:appcompat-resources:1.2.0"
-androidx-constraintlayout = "androidx.constraintlayout:constraintlayout:2.0.4"
+androidx-appcompat = "androidx.appcompat:appcompat:1.3.1"
+androidx-constraintlayout = "androidx.constraintlayout:constraintlayout:2.1.0"
 androidx-coordinatorlayout = "androidx.coordinatorlayout:coordinatorlayout:1.1.0"
 androidx-recyclerview = "androidx.recyclerview:recyclerview:1.2.1"
 androidx-lifecycle-viewmodel-compose = "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07"
-androidx-datastore = "androidx.datastore:datastore-preferences:1.0.0-beta02"
+androidx-datastore = "androidx.datastore:datastore-preferences:1.0.0"
+androidx-dynamicanimation = "androidx.dynamicanimation:dynamicanimation-ktx:1.0.0-alpha03"
 androidx-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
 androidx-lifecycle-common = { module = "androidx.lifecycle:lifecycle-common-java8", version.ref = "lifecycle" }
 androidx-lifecycle-testing = { module = "androidx.lifecycle:lifecycle-runtime-testing", version.ref = "lifecycle" }
-androidx-test-junit = "androidx.test.ext:junit:1.1.2"
-androidx-test-espresso = "androidx.test.espresso:espresso-core:3.3.0"
-materialComponents = "com.google.android.material:material:1.3.0"
-googleMaps = "com.google.android.gms:play-services-maps:17.0.1"
+androidx-test-junit = "androidx.test.ext:junit:1.1.3"
+androidx-test-rules = "androidx.test:rules:1.4.0"
+androidx-test-runner = "androidx.test:runner:1.4.0"
+androidx-test-espresso = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso" }
+androidx-test-espressoIdlingConcurrent = { module = "androidx.test.espresso.idling:idling-concurrent", version.ref = "espresso" }
+materialComponents = "com.google.android.material:material:1.4.0"
+googleMaps = "com.google.android.gms:play-services-maps:18.0.0"
 gms-location = "com.google.android.gms:play-services-location:18.0.0"
 junit = "junit:junit:4.13.2"
+processPhoenix = "com.jakewharton:process-phoenix:2.1.2"
+firebase-crashlytics = "com.google.firebase:firebase-crashlytics-ktx:18.2.6"
 
 [bundles]
 compose = [

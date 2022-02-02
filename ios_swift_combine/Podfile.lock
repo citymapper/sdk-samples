@@ -1,16 +1,16 @@
 PODS:
-  - CitymapperNavigation (1.0.1)
+  - CitymapperNavigation (3.0.0)
 
 DEPENDENCIES:
-  - CitymapperNavigation (= 1.0.1)
+  - CitymapperNavigation (= 3.0.0)
 
 SPEC REPOS:
   trunk:
     - CitymapperNavigation
 
 SPEC CHECKSUMS:
-  CitymapperNavigation: ad2f294bfae59c797060a376e9f157c1ac223296
+  CitymapperNavigation: 3c7d048ce3af1bf63a53244746ee0e4c48ad6045
 
-PODFILE CHECKSUM: 84c5b11522ebb2c25122a42b5754e37e95c28350
+PODFILE CHECKSUM: 2dd43459fd88fc3eb693cba99578ba91385a17d1
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.11.2

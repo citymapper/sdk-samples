@@ -21,6 +21,7 @@ import com.citymapper.sdk.core.transit.HiredVehicleLeg
 import com.citymapper.sdk.core.transit.Profile
 import com.citymapper.sdk.core.transit.Route
 import com.citymapper.sdk.directions.CitymapperDirections
+import com.citymapper.sdk.directions.results.DirectionsError
 import com.citymapper.sdk.navigation.CitymapperNavigationTracking
 import com.citymapper.sdk.navigation.StartNavigationResult
 import com.citymapper.sdk.navigation.TrackingConfiguration
@@ -29,7 +30,6 @@ import com.citymapper.sdk.navigation.progress.RouteProgress
 import com.citymapper.sdk.navigation.ui.getPathSegments
 import com.example.sdk.sample.ui.common.defaultCameraPosition
 import com.example.sdk.sample.ui.map.MapCameraPosition
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapNotNull
@@ -225,14 +225,14 @@ class HomeViewModel(
   }
 }
 
-private fun ApiResult<DirectionsResults>.firstRoute(): Route? {
+private fun ApiResult<DirectionsResults, DirectionsError>.firstRoute(): Route? {
   return (this as? ApiResult.Success)?.data?.routes?.firstOrNull()
 }
 
 data class HomeViewState(
   val start: Coords? = null,
   val end: Coords? = null,
-  val directions: ApiResult<DirectionsResults>? = null,
+  val directions: ApiResult<DirectionsResults, DirectionsError>? = null,
   val profile: Profile = Profile.Regular,
   val isLoading: Boolean = false,
   val hasLocationPermission: Boolean? = null,

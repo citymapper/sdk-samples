@@ -20,8 +20,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.citymapper.sdk.core.ApiResult
 import com.citymapper.sdk.directions.CitymapperDirections
 import com.citymapper.sdk.navigation.CitymapperNavigationTracking
-import com.citymapper.sdk.navigation.StartNavigationResult
+import com.citymapper.sdk.navigation.StartNavigationResult.Failure
 import com.citymapper.sdk.navigation.StartNavigationResult.FailureReason.RouteNotSupported
+import com.citymapper.sdk.navigation.StartNavigationResult.FailureReason.UserTooFarFromRoute
 import com.example.sdk.sample.ui.common.SampleLoading
 import com.example.sdk.sample.ui.common.demoColors
 import com.example.sdk.sample.ui.map.MapView
@@ -114,7 +115,7 @@ fun HomeScreen() {
         endGo = { viewModel.endGo() },
         vehicleLockState = { viewModel.setVehicleLockState(it) }
       )
-      state.directions is ApiResult.Failure -> ErrorDialog(state.directions.exception?.message) {
+      state.directions is ApiResult.Failure -> ErrorDialog("Oh noes") {
         viewModel.consumeApiError()
       }
       state.directions is ApiResult.Success && state.route != null -> PreviewContainer(state.route) {
@@ -133,7 +134,7 @@ fun HomeScreen() {
 
 @Composable
 private fun StartNavigationFailureDialog(
-  startNavigationFailure: StartNavigationResult.Failure,
+  startNavigationFailure: Failure,
   onDismiss: () -> Unit
 ) {
   AlertDialog(
@@ -155,6 +156,7 @@ private fun StartNavigationFailureDialog(
     text = {
       val message = when (startNavigationFailure.reason) {
         RouteNotSupported -> "Route not supported"
+        UserTooFarFromRoute -> "User too far from route"
       }
 
       Text(text = message)

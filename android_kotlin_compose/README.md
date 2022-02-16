@@ -7,7 +7,6 @@ This sample demonstrates turn-by-turn bicycle directions with voice guidance on 
 To build and run the sample, some variables must be set in `~/.gradle/gradle.properties`:
 
 ```
-CITYMAPPER_SDK_INSTALL_TOKEN=[your SDK Install Token]
 CITYMAPPER_API_KEY=[your API key]
 CITYMAPPER_ENDPOINT_URL=[your API endpoint url]
 CITYMAPPER_SAMPLE_GOOGLE_MAP_KEY=[your google map key]

@@ -13,8 +13,8 @@ android {
         versionCode 1
         versionName "1.0"
 
-        buildConfigField "String", "CITYMAPPER_API_KEY", "\"${project.findProperty("SAMPLE_API_KEY") ?: ""}\""
-        buildConfigField "String", "CITYMAPPER_ENDPOINT_URL", "\"${project.findProperty("SAMPLE_ENDPOINT_URL") ?: ""}\""
+        buildConfigField "String", "CITYMAPPER_API_KEY", "\"${project.findProperty("CITYMAPPER_API_KEY") ?: ""}\""
+        buildConfigField "String", "CITYMAPPER_ENDPOINT_URL", "\"${project.findProperty("CITYMAPPER_ENDPOINT_URL") ?: ""}\""
 
         resValue "string", "google_map_key", "\"${project.findProperty("CITYMAPPER_SAMPLE_GOOGLE_MAP_KEY") ?: ""}\""
 

@@ -1,0 +1,10 @@
+ext {
+    compileSdkVersion = 33
+    targetSdkVersion = 33
+    minSdkVersion = 21
+}
+
+wrapper {
+    gradleVersion = "7.5.1"
+    distributionType = Wrapper.DistributionType.ALL
+}

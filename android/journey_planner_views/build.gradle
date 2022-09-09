@@ -1,0 +1,59 @@
+plugins {
+    alias libs.plugins.android.application
+    alias libs.plugins.kotlin
+}
+
+android {
+    namespace 'com.example.simpletransportviews'
+    compileSdk 33
+
+    buildFeatures {
+        viewBinding true
+    }
+
+    defaultConfig {
+        applicationId "com.example.simpletransportviews"
+        minSdk 24
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "CITYMAPPER_API_KEY", "\"${project.findProperty("CITYMAPPER_API_KEY") ?: ""}\""
+        buildConfigField "String", "PLACES_API_KEY", "\"${project.findProperty("GOOGLE_PLACES_API_KEY") ?: ""}\""
+        resValue "string", "google_map_key", "\"${project.findProperty("GOOGLE_MAP_API_KEY") ?: ""}\""
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+
+        freeCompilerArgs += [
+                '-Xjsr305=strict',
+                '-Xjvm-default=all'
+        ]
+    }
+}
+
+dependencies {
+    implementation libs.androidx.core
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.constraintlayout
+    implementation libs.androidx.navigation
+    implementation libs.google.material
+    implementation libs.citymapper.ui
+    implementation libs.citymapper.ui.search
+    testImplementation libs.junit
+    androidTestImplementation libs.androidx.test.junit
+    androidTestImplementation libs.androidx.test.espresso
+}

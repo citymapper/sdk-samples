@@ -22,9 +22,7 @@ class SearchFragment : Fragment(R.layout.fragment_search) {
 
     FragmentSearchBinding.bind(view)
       .searchView
-      .configure(searchState, onClose = {
-        findNavController().popBackStack()
-      })
+      .configure(searchState)
 
     if (searchState.canRestoreLastResolvedState()) {
       requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {

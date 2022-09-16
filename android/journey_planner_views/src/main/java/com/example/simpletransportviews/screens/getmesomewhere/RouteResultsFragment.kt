@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.citymapper.sdk.cache.StoredRouteHandle
+import com.citymapper.sdk.core.annotation.CitymapperExperimental
 import com.citymapper.sdk.core.transit.Route
 import com.citymapper.sdk.directions.CitymapperDirections
 import com.citymapper.sdk.ui.navigation.CitymapperDirectionsView
@@ -22,7 +23,7 @@ import com.example.simpletransportviews.util.Loading
 import com.example.simpletransportviews.util.Success
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalSearchUi::class)
+@OptIn(ExperimentalSearchUi::class, CitymapperExperimental::class)
 class RouteResultsFragment : Fragment(R.layout.fragment_route_results) {
 
   private val searchViewModel by viewModels<GetMeSomewhereViewModel>(ownerProducer = { requireParentFragment() })

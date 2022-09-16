@@ -7,7 +7,7 @@ target 'CitymapperUISample' do
 
   # Pods for CitymapperUISample
 
-  pod 'CitymapperUI', '3.3.0-alpha.5'
+  pod 'CitymapperUI', '3.3.0-alpha.6'
 
   target 'CitymapperUISampleTests' do
     inherit! :search_paths

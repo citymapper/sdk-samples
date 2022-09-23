@@ -20,3 +20,6 @@ struct BrandConstants {
     static let scooterBrandId = "Dott"
 }
 
+struct ConfigurationConstants {
+    static let googlePlacesApiKey = "[Place your Google Places API Key here]"
+}

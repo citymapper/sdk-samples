@@ -6,6 +6,7 @@
 //
 
 import CitymapperUI
+import CitymapperCore
 import Foundation
 import SwiftUI
 

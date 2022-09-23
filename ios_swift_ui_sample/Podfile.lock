@@ -1,29 +1,35 @@
 PODS:
-  - CitymapperCore (3.3.0-alpha.6)
-  - CitymapperInternalCore (3.3.0-alpha.6):
-    - CitymapperCore (= 3.3.0-alpha.6)
-  - CitymapperNavigation (3.3.0-alpha.6):
-    - CitymapperInternalCore (= 3.3.0-alpha.6)
-  - CitymapperUI (3.3.0-alpha.6):
-    - CitymapperInternalCore (= 3.3.0-alpha.6)
-    - CitymapperNavigation (= 3.3.0-alpha.6)
+  - CitymapperCore (3.3.0-alpha.8)
+  - CitymapperGoogleSearchProvider (3.3.0-alpha.8):
+    - CitymapperInternalCore (= 3.3.0-alpha.8)
+    - CitymapperNavigation (= 3.3.0-alpha.8)
+  - CitymapperInternalCore (3.3.0-alpha.8):
+    - CitymapperCore (= 3.3.0-alpha.8)
+  - CitymapperNavigation (3.3.0-alpha.8):
+    - CitymapperInternalCore (= 3.3.0-alpha.8)
+  - CitymapperUI (3.3.0-alpha.8):
+    - CitymapperInternalCore (= 3.3.0-alpha.8)
+    - CitymapperNavigation (= 3.3.0-alpha.8)
 
 DEPENDENCIES:
-  - CitymapperUI (= 3.3.0-alpha.6)
+  - CitymapperGoogleSearchProvider (= 3.3.0-alpha.8)
+  - CitymapperUI (= 3.3.0-alpha.8)
 
 SPEC REPOS:
   trunk:
     - CitymapperCore
+    - CitymapperGoogleSearchProvider
     - CitymapperInternalCore
     - CitymapperNavigation
     - CitymapperUI
 
 SPEC CHECKSUMS:
-  CitymapperCore: 26219c49e87a54202934da6c883284ceee6ffda9
-  CitymapperInternalCore: c8020ef2249ac9cbaa9408736839118998a20da8
-  CitymapperNavigation: 6df544aea5c6a0fadeaaa4a0a045fda7af9ce5e5
-  CitymapperUI: 04211a0e92f1a5192b3a2ce6265a277b943fba06
+  CitymapperCore: 18821a001e5fc79df9ac46579239d05bf9d31f54
+  CitymapperGoogleSearchProvider: d1e0d3e17122632dc1ede15d4049fdb85328cd21
+  CitymapperInternalCore: 0b7dab49b7269d245d18e19b0b9db9bc4790411c
+  CitymapperNavigation: 5bd44dcbef53178f13387a072cffd78fc1b5aa52
+  CitymapperUI: 109f6237182f542c9b4bcebd434671df8badc805
 
-PODFILE CHECKSUM: 69ce69ab99721567a532fb61a597726bff716542
+PODFILE CHECKSUM: 493ad1fb923cda85963dbaa68c8c8c96211edd58
 
 COCOAPODS: 1.11.3

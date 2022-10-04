@@ -41,7 +41,7 @@ class RouteResultsViewModel(
     viewModelScope.launch {
       searchState.filterNotNull()
         .flatMapLatest { it.resolvedState.filterNotNull() }
-        .distinctUntilChanged { old, new -> new.requiresReplan(old) }
+        .distinctUntilChanged { old, new -> !new.requiresReplan(old) }
         .collect {
           currentResolvedSpec = it
           planRoutes()

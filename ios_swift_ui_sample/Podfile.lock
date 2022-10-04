@@ -1,22 +1,22 @@
 PODS:
-  - CitymapperCore (3.3.0-alpha.8)
-  - CitymapperGoogleSearchProvider (3.3.0-alpha.8):
-    - CitymapperInternalCore (= 3.3.0-alpha.8)
-    - CitymapperNavigation (= 3.3.0-alpha.8)
-  - CitymapperInternalCore (3.3.0-alpha.8):
-    - CitymapperCore (= 3.3.0-alpha.8)
-  - CitymapperNavigation (3.3.0-alpha.8):
-    - CitymapperInternalCore (= 3.3.0-alpha.8)
-  - CitymapperUI (3.3.0-alpha.8):
-    - CitymapperInternalCore (= 3.3.0-alpha.8)
-    - CitymapperNavigation (= 3.3.0-alpha.8)
+  - CitymapperCore (3.3.0-alpha.12)
+  - CitymapperGoogleSearchProvider (3.3.0-alpha.12):
+    - CitymapperInternalCore (= 3.3.0-alpha.12)
+    - CitymapperNavigation (= 3.3.0-alpha.12)
+  - CitymapperInternalCore (3.3.0-alpha.12):
+    - CitymapperCore (= 3.3.0-alpha.12)
+  - CitymapperNavigation (3.3.0-alpha.12):
+    - CitymapperInternalCore (= 3.3.0-alpha.12)
+  - CitymapperUI (3.3.0-alpha.12):
+    - CitymapperInternalCore (= 3.3.0-alpha.12)
+    - CitymapperNavigation (= 3.3.0-alpha.12)
 
 DEPENDENCIES:
-  - CitymapperGoogleSearchProvider (= 3.3.0-alpha.8)
-  - CitymapperUI (= 3.3.0-alpha.8)
+  - CitymapperGoogleSearchProvider (= 3.3.0-alpha.12)
+  - CitymapperUI (= 3.3.0-alpha.12)
 
 SPEC REPOS:
-  trunk:
+  https://github.com/CocoaPods/Specs.git:
     - CitymapperCore
     - CitymapperGoogleSearchProvider
     - CitymapperInternalCore
@@ -24,12 +24,12 @@ SPEC REPOS:
     - CitymapperUI
 
 SPEC CHECKSUMS:
-  CitymapperCore: 18821a001e5fc79df9ac46579239d05bf9d31f54
-  CitymapperGoogleSearchProvider: d1e0d3e17122632dc1ede15d4049fdb85328cd21
-  CitymapperInternalCore: 0b7dab49b7269d245d18e19b0b9db9bc4790411c
-  CitymapperNavigation: 5bd44dcbef53178f13387a072cffd78fc1b5aa52
-  CitymapperUI: 109f6237182f542c9b4bcebd434671df8badc805
+  CitymapperCore: 3f087a66414416ae53d72b33b86203f1b6f1b18d
+  CitymapperGoogleSearchProvider: 00337c1b533f9b8ad8c45f28860656f2c88c7e15
+  CitymapperInternalCore: 212cb51df7094404ec8536103ef31b8c5ad9b8ab
+  CitymapperNavigation: 153c860863077915b4c962b6e9bf172d18f13439
+  CitymapperUI: 3c45f7d13c57b97fe20d5d4157aa38362b3830a5
 
-PODFILE CHECKSUM: 493ad1fb923cda85963dbaa68c8c8c96211edd58
+PODFILE CHECKSUM: 22bbf62c8f3ac425a7f3dcf211822d0f14c6080b
 
 COCOAPODS: 1.11.3

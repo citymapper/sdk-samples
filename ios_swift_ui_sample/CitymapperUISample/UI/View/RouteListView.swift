@@ -19,6 +19,7 @@ struct RouteListView: View {
     let didSwapStartAndEnd: () -> Void
     let startHasBeenFocused: () -> Void
     let endHasBeenFocused: () -> Void
+    let timePickerButtonDidTap: () -> Void
     
     @ViewBuilder var routeDetailsView: some View {
         if let route = route {
@@ -41,11 +42,13 @@ struct RouteListView: View {
             SearchHeaderView(
                 start: viewModel.routePlanningSpec.start,
                 end: viewModel.routePlanningSpec.end,
+                timeConstraint: viewModel.routePlanningSpec.timeConstraint,
                 didSwapStartAndEnd: { didSwapStartAndEnd() },
                 startHasBeenFocused: { startHasBeenFocused() },
-                endHasBeenFocused: { endHasBeenFocused() }
+                endHasBeenFocused: { endHasBeenFocused() },
+                timePickerButtonDidTap: { timePickerButtonDidTap() }
             )
-            .frame(maxHeight: 135)
+            .frame(maxHeight: 190)
             LinearGradient(colors: [.gray, .white], startPoint: .top, endPoint: .bottom)
                 .frame(height: 4)
                 .opacity(0.8)

@@ -30,17 +30,23 @@ struct SearchHeaderView: UIViewRepresentable {
         func didSwapStartAndEnd() {
             parent.didSwapStartAndEnd()
         }
+        
+        func timePickerButtonDidTap() {
+            parent.timePickerButtonDidTap()
+        }
     }
     
     let start: SearchResult
     let end: SearchResult
+    let timeConstraint: DepartOrArriveConstraint?
     
     let didSwapStartAndEnd: () -> Void
     let startHasBeenFocused: () -> Void
     let endHasBeenFocused: () -> Void
+    let timePickerButtonDidTap: () -> Void
     
     func makeUIView(context: Context) -> some UIView {
-        let headerView = CitymapperSearchHeaderView(start: start, end: end)
+        let headerView = CitymapperSearchHeaderView(start: start, end: end, timeConstraint: timeConstraint)
         headerView.delegate = context.coordinator
         return headerView
     }
@@ -49,6 +55,7 @@ struct SearchHeaderView: UIViewRepresentable {
         guard let view = uiView as? CitymapperSearchHeaderView else { return }
         view.start = start
         view.end = end
+        view.timeConstraint = timeConstraint
     }
     
     func makeCoordinator() -> Coordinator {

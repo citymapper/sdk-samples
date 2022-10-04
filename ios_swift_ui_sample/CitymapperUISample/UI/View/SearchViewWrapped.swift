@@ -32,21 +32,32 @@ struct SearchViewWrapped: View {
     )
     
     @State private var resolvedState: RoutePlanningSpec?
+    @State private var showTimePicker: Bool = false
+    
     var body: some View {
-        VStack {
-            if let state = resolvedState {
-                RouteListView(viewModel: RouteListViewModel(routesLoader: routesLoader, routePlanningSpec: state),
-                              didSwapStartAndEnd: { searchState.swapStartAndEnd() },
-                              startHasBeenFocused: { searchState.clearResolvedStateAndEditStart() },
-                              endHasBeenFocused:  { searchState.clearResolvedStateAndEditEnd() }
-                ).navigationBarTitle("Routes List", displayMode: .inline)
-            } else {
-                SearchView(searchState: searchState)
-                    .navigationBarTitle("Search", displayMode: .inline)
-                    .ignoresSafeArea(.all, edges: .bottom)
+        ZStack {
+            VStack {
+                if let state = resolvedState {
+                    RouteListView(viewModel: RouteListViewModel(routesLoader: routesLoader, routePlanningSpec: state),
+                                  didSwapStartAndEnd: { searchState.swapStartAndEnd() },
+                                  startHasBeenFocused: { searchState.clearResolvedStateAndEditStart() },
+                                  endHasBeenFocused:  { searchState.clearResolvedStateAndEditEnd() },
+                                  timePickerButtonDidTap: {
+                        showTimePicker.toggle()
+                    }
+                    ).navigationBarTitle("Routes List", displayMode: .inline)
+                } else {
+                    SearchView(searchState: searchState)
+                        .navigationBarTitle("Search", displayMode: .inline)
+                        .ignoresSafeArea(.all, edges: .bottom)
+                }
+            }.onReceive(searchState.resolvedStatePublisher) { state in
+                resolvedState = state
             }
-        }.onReceive(searchState.resolvedStatePublisher) { state in
-            resolvedState = state
+            
+            CitymapperTimePickerView(isPresented: $showTimePicker) { timeConstraint in
+                searchState.setTimeConstraint(timeConstraint: timeConstraint)
+            }
         }
     }
 }

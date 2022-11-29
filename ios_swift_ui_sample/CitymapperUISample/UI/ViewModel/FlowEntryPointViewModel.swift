@@ -8,5 +8,6 @@
 import Foundation
 
 class FlowEntryPointViewModel: ObservableObject {
-    @Published var isShowingDetailView = false
+    @Published var isShowingGMSView = false
+    @Published var isShowingNearbyView = false
 }

@@ -26,6 +26,8 @@
 		3157957328C0E39800AB2F25 /* CitymapperUISampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3157957228C0E39800AB2F25 /* CitymapperUISampleTests.swift */; };
 		3157957D28C0E39800AB2F25 /* CitymapperUISampleUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3157957C28C0E39800AB2F25 /* CitymapperUISampleUITests.swift */; };
 		3157957F28C0E39800AB2F25 /* CitymapperUISampleUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3157957E28C0E39800AB2F25 /* CitymapperUISampleUITestsLaunchTests.swift */; };
+		319E5587292F9399006DC425 /* NearbyMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 319E5586292F9399006DC425 /* NearbyMapView.swift */; };
+		319E5589292FB2C1006DC425 /* NearbyViewWrapped.swift in Sources */ = {isa = PBXBuildFile; fileRef = 319E5588292FB2C1006DC425 /* NearbyViewWrapped.swift */; };
 		9DD6C5D6F1270BD24A32DFE9 /* Pods_CitymapperUISampleTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F8252F8362881D6AE7F8F620 /* Pods_CitymapperUISampleTests.framework */; };
 		B26CE8B407A35574B10EEA15 /* Pods_CitymapperUISample.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A89D07ABE1E2424C7E3F1B67 /* Pods_CitymapperUISample.framework */; };
 		B397C3D3030D9BF57EF32472 /* Pods_CitymapperUISample_CitymapperUISampleUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7242B2A5153CAB49FDFE96E5 /* Pods_CitymapperUISample_CitymapperUISampleUITests.framework */; };
@@ -73,6 +75,8 @@
 		3157957828C0E39800AB2F25 /* CitymapperUISampleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CitymapperUISampleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3157957C28C0E39800AB2F25 /* CitymapperUISampleUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CitymapperUISampleUITests.swift; sourceTree = "<group>"; };
 		3157957E28C0E39800AB2F25 /* CitymapperUISampleUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CitymapperUISampleUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		319E5586292F9399006DC425 /* NearbyMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbyMapView.swift; sourceTree = "<group>"; };
+		319E5588292FB2C1006DC425 /* NearbyViewWrapped.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbyViewWrapped.swift; sourceTree = "<group>"; };
 		4546BF41D715B78641D71819 /* Pods-CitymapperUISample-CitymapperUISampleUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CitymapperUISample-CitymapperUISampleUITests.release.xcconfig"; path = "Target Support Files/Pods-CitymapperUISample-CitymapperUISampleUITests/Pods-CitymapperUISample-CitymapperUISampleUITests.release.xcconfig"; sourceTree = "<group>"; };
 		7242B2A5153CAB49FDFE96E5 /* Pods_CitymapperUISample_CitymapperUISampleUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CitymapperUISample_CitymapperUISampleUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A89D07ABE1E2424C7E3F1B67 /* Pods_CitymapperUISample.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CitymapperUISample.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -142,6 +146,8 @@
 			children = (
 				313D424C28C8EF370072B3DD /* DirectionsView.swift */,
 				3157956328C0E39600AB2F25 /* FlowEntryPointView.swift */,
+				319E5586292F9399006DC425 /* NearbyMapView.swift */,
+				319E5588292FB2C1006DC425 /* NearbyViewWrapped.swift */,
 				313D424A28C8CC910072B3DD /* RouteDetailsView.swift */,
 				314EFDAF28C20F8A00B627B8 /* RouteListView.swift */,
 				314EFDB528C22EDF00B627B8 /* RoutesView.swift */,
@@ -487,6 +493,7 @@
 				313D424D28C8EF370072B3DD /* DirectionsView.swift in Sources */,
 				314EFDB628C22EDF00B627B8 /* RoutesView.swift in Sources */,
 				3157956428C0E39600AB2F25 /* FlowEntryPointView.swift in Sources */,
+				319E5587292F9399006DC425 /* NearbyMapView.swift in Sources */,
 				3157956228C0E39600AB2F25 /* CitymapperUISampleApp.swift in Sources */,
 				314EFDB428C22E6600B627B8 /* SearchView.swift in Sources */,
 				314EFDB228C22B5D00B627B8 /* SearchHeaderView.swift in Sources */,
@@ -495,6 +502,7 @@
 				313D425428CB7B3E0072B3DD /* SearchViewWrapped.swift in Sources */,
 				313D425228CB7AC10072B3DD /* RouteListViewModel.swift in Sources */,
 				314EFDBA28C236A400B627B8 /* Configuration.swift in Sources */,
+				319E5589292FB2C1006DC425 /* NearbyViewWrapped.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

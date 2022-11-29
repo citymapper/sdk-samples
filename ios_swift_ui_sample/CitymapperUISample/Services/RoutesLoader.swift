@@ -58,71 +58,87 @@ struct DefaultRoutesLoader: RoutesLoader {
     
     private func getWalkingRoute(from startCoordinate: CLLocationCoordinate2D,
                                  to endCoordinate: CLLocationCoordinate2D) async throws -> Route {
-        return try await newResultSet(start: startCoordinate,
-                                      end: endCoordinate,
-                                      routingRequestId: nil)
-            .walkRoutes()
-            .firstRouteOrThrow()
+        return try await newResultSet(start: startCoordinate, end: endCoordinate, routingRequestId: nil) {
+            $0.walkRoute()
+        }
+        .routes()
+        .firstRouteOrThrow()
     }
     
     private func getBikeRoute(from startCoordinate: CLLocationCoordinate2D,
                               to endCoordinate: CLLocationCoordinate2D,
                               profile: Profile? = nil) async throws -> Route {
-        return try await newResultSet(start: startCoordinate, end: endCoordinate, routingRequestId: nil)
-            .bikeRoutes(profiles: profile.map { [$0] } ?? [.regular])
-            .firstRouteOrThrow()
+        return try await newResultSet(start: startCoordinate, end: endCoordinate, routingRequestId: nil) {
+            $0.bikeRoute(profile: profile ?? .regular)
+        }
+        .routes()
+        .firstRouteOrThrow()
     }
     
     private func getScooterRoute(from startCoordinate: CLLocationCoordinate2D,
                                  to endCoordinate: CLLocationCoordinate2D) async throws -> Route {
-        return try await newResultSet(start: startCoordinate, end: endCoordinate, routingRequestId: nil)
-            .scooterRoute()
-            .firstRouteOrThrow()
+        return try await newResultSet(start: startCoordinate, end: endCoordinate, routingRequestId: nil) {
+            $0.scooterRoute()
+        }
+        .routes()
+        .firstRouteOrThrow()
     }
     
     private func getTransitRoutes(from startCoordinate: CLLocationCoordinate2D,
                                   to endCoordinate: CLLocationCoordinate2D,
                                   departOrArriveConstraint: DepartOrArriveConstraint) async throws -> [Route] {
-        return try await newResultSet(start: startCoordinate, end: endCoordinate, routingRequestId: nil, departOrArriveConstraint: departOrArriveConstraint)
-            .transitRoutes()
-            .resultOrThrow()
-            .routes
+        return try await newResultSet(start: startCoordinate, end: endCoordinate, routingRequestId: nil, departOrArriveConstraint: departOrArriveConstraint) {
+            $0.transitRoutes()
+        }
+        .routes()
+        .resultOrThrow()
+        .routes
     }
     
     private func getTaxiRoutes(from startCoordinate: CLLocationCoordinate2D,
                                to endCoordinate: CLLocationCoordinate2D,
                                brandIds: [String]? = nil) async throws -> [Route] {
-        return try await newResultSet(start: startCoordinate, end: endCoordinate, routingRequestId: nil)
-            .taxiRoutes(brandIds: brandIds)
-            .resultOrThrow()
-            .routes
+        return try await newResultSet(start: startCoordinate, end: endCoordinate, routingRequestId: nil) {
+            $0.taxiRoutes(brandIds: brandIds)
+        }
+        .routes()
+        .resultOrThrow()
+        .routes
     }
     
     private func getBikeHireRoute(from startCoordinate: CLLocationCoordinate2D,
                                   to endCoordinate: CLLocationCoordinate2D,
                                   brandId: String) async throws -> Route {
-        return try await newResultSet(start: startCoordinate, end: endCoordinate, routingRequestId: nil)
-            .bikeHireRoutes(brandId: brandId)
-            .firstRouteOrThrow()
+        return try await newResultSet(start: startCoordinate, end: endCoordinate, routingRequestId: nil) {
+            $0.bikeHireRoute(brandId: brandId)
+        }
+        .routes()
+        .firstRouteOrThrow()
     }
     
     private func getScooterHireRoute(from startCoordinate: CLLocationCoordinate2D,
                                      to endCoordinate: CLLocationCoordinate2D,
                                      brandId: String) async throws -> Route {
-        return try await newResultSet(start: startCoordinate, end: endCoordinate, routingRequestId: nil)
-            .scooterHireRoute(brandId: brandId)
-            .firstRouteOrThrow()
+        return try await newResultSet(start: startCoordinate, end: endCoordinate, routingRequestId: nil) {
+            $0.scooterHireRoute(brandId: brandId)
+        }
+        .routes()
+        .firstRouteOrThrow()
     }
     
     private func newResultSet(start: CLLocationCoordinate2D,
                               end: CLLocationCoordinate2D,
                               routingRequestId: String?,
-                              departOrArriveConstraint: DepartOrArriveConstraint = .departApproximateNow) -> RouteResultSet {
-        let builder = Citymapper.shared.resultsSetBuilder(start: start, end: end, departOrArriveConstraint: departOrArriveConstraint)
-        if let routingRequestId = routingRequestId {
-            builder.addExtra(key: "routing_request_id", value: routingRequestId, persistent: true)
+                              departOrArriveConstraint: DepartOrArriveConstraint = .departApproximateNow,
+                              builder: (RouteResultSet.Builder) -> Void) -> RouteResultSet {
+        return Citymapper.shared.directions.buildResultSet(start: start, end: end, timeConstraint: departOrArriveConstraint) {
+            
+            if let routingRequestId = routingRequestId {
+                $0.addExtra(key: "routing_request_id", value: routingRequestId, persistent: true)
+            }
+            
+            builder($0)
         }
-        return builder.build()
     }
 }
 

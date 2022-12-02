@@ -11,8 +11,6 @@
 	<string>UISample uses the &apos;when in use&apos; location permission to demonstrate the ability to show the blue dot on the Citymapper (MapKit) map, without Citymapper logic ever having access to your user&apos;s location.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Required for GO mode</string>
-	<key>CitymapperSDKEndpointURL</key>
-	<string></string>
 	<key>CitymapperSDKAPIKey</key>
 	<string></string>
 </dict>

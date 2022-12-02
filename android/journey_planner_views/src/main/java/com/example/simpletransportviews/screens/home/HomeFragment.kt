@@ -1,13 +1,27 @@
 package com.example.simpletransportviews.screens.home
 
 import android.Manifest
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup.LayoutParams
+import android.view.ViewGroup.MarginLayoutParams
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.citymapper.sdk.ui.nearby.CitymapperNearbyState
+import com.citymapper.sdk.ui.nearby.view.NearbyFiltersAndDetailView
 import com.example.simpletransportviews.R
+import com.example.simpletransportviews.config.Constants
 import com.example.simpletransportviews.databinding.FragmentHomeBinding
 import com.example.simpletransportviews.screens.NavRoutes
 
@@ -21,12 +35,40 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
       }
     }
 
+  @SuppressLint("ClickableViewAccessibility")
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
+    val nearbyState =
+      CitymapperNearbyState.create(requireContext(), viewLifecycleOwner.lifecycleScope)
+
     val binding = FragmentHomeBinding.bind(view)
-    binding.getMeHome.setOnClickListener {
+    binding.getMeSomewhere.setOnClickListener {
       checkPermissionAndOpenGms()
+    }
+
+    ViewCompat.setOnApplyWindowInsetsListener(binding.gmsContainer) { v, insets ->
+      v.updateLayoutParams<MarginLayoutParams> {
+        bottomMargin = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
+      }
+      insets
+    }
+
+    val onBackPressedCallback = object : OnBackPressedCallback(false) {
+      override fun handleOnBackPressed() {
+        if (isShowingNearby(binding)) {
+          animateToHome(binding, this)
+        }
+      }
+    }
+    requireActivity().onBackPressedDispatcher.addCallback(
+      viewLifecycleOwner,
+      onBackPressedCallback
+    )
+
+    binding.map.configure(nearbyState, fallbackMapCenter = Constants.DefaultMapCenter)
+    binding.showNearby.setOnClickListener {
+      animateToNearby(binding, nearbyState, onBackPressedCallback)
     }
   }
 
@@ -41,6 +83,39 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         )
       )
     }
+  }
+
+  private fun isShowingNearby(binding: FragmentHomeBinding) =
+    binding.nearbyCardsContainer.childCount > 0
+
+  private fun animateToNearby(
+    binding: FragmentHomeBinding,
+    nearbyState: CitymapperNearbyState,
+    onBackPressedCallback: OnBackPressedCallback
+  ) {
+    binding.gmsContainer.animate()
+      .y(binding.root.height.toFloat())
+      .setListener(object : AnimatorListenerAdapter() {
+        override fun onAnimationEnd(animation: Animator) {
+          val detailView = NearbyFiltersAndDetailView(requireContext())
+          binding.nearbyCardsContainer.addView(
+            detailView,
+            LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+          )
+
+          detailView.configure(nearbyState)
+          onBackPressedCallback.isEnabled = true
+        }
+      })
+  }
+
+  private fun animateToHome(
+    binding: FragmentHomeBinding,
+    onBackPressedCallback: OnBackPressedCallback
+  ) {
+    binding.nearbyCardsContainer.removeAllViews()
+    binding.gmsContainer.animate().translationY(0f).setListener(null)
+    onBackPressedCallback.isEnabled = false
   }
 
   private fun openGms() {

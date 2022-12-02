@@ -8,18 +8,13 @@
 import CitymapperNavigation
 import CitymapperUI
 import SwiftUI
+import MapKit
 
 struct RouteListView: View {
     
     @State private var isShowingTransitRouteDetails = false
     @State private var isShowingRouteDetails = false
     @State private (set) var route: Route? = nil
-    @ObservedObject var viewModel: RouteListViewModel
-    
-    let didSwapStartAndEnd: () -> Void
-    let startHasBeenFocused: () -> Void
-    let endHasBeenFocused: () -> Void
-    let timePickerButtonDidTap: () -> Void
     
     @ViewBuilder var routeDetailsView: some View {
         if let route = route {
@@ -38,47 +33,52 @@ struct RouteListView: View {
     }
     
     var body: some View {
-        VStack(spacing: 0) {
-            SearchHeaderView(
-                start: viewModel.routePlanningSpec.start,
-                end: viewModel.routePlanningSpec.end,
-                timeConstraint: viewModel.routePlanningSpec.timeConstraint,
-                didSwapStartAndEnd: { didSwapStartAndEnd() },
-                startHasBeenFocused: { startHasBeenFocused() },
-                endHasBeenFocused: { endHasBeenFocused() },
-                timePickerButtonDidTap: { timePickerButtonDidTap() }
-            )
-            .frame(maxHeight: 190)
-            LinearGradient(colors: [.gray, .white], startPoint: .top, endPoint: .bottom)
-                .frame(height: 4)
-                .opacity(0.8)
-            
-            if viewModel.routes.isEmpty {
-                Spacer(minLength: 20)
-                ProgressView("Loading...")
-                Spacer(minLength: 20)
-            } else {
-                RoutesView(routes: viewModel.routes) { route in
-                    self.route = route
-                    if route.hasTransitLegs() {
-                        isShowingTransitRouteDetails = true
-                    } else {
-                        isShowingRouteDetails = true
-                    }
-                }.ignoresSafeArea(.all, edges: .bottom)
+        /*
+        let searchProviderFactory = googleSearchProviderFactory(
+            googlePlacesApiKey: ConfigurationConstants.googlePlacesApiKey,
+            region: MKCoordinateRegion(center: LocationConstants.bigBenLocation,
+                                       span: LocationConstants.defaultSpan)
+        */
+
+        let bigBen = LocationConstants.bigBenLocation
+        let searchProviderFactory = appleSearchProviderFactory(
+            region: MKCoordinateRegion(center: bigBen,
+                                       span: LocationConstants.defaultSpan))
+        
+        BottomSheetSearchWithMapView(
+            // A fallback location for the map center e.g. if no location permission
+            // is granted
+            defaultMapCenter: Coords(latitude: bigBen.latitude, longitude: bigBen.longitude),
+            searchProviderFactory: searchProviderFactory,
+            onClose: {
+                // Back button action
+            },
+            planBuilder: { builder in
+                // Customise the routes planned
+                builder.walkRoute()
+                builder.scooterRoute()
+                builder.transitRoutes()
+            },
+            onClickRoute: { route in
+                self.route = route
+                if route.hasTransitLegs() {
+                    isShowingTransitRouteDetails = true
+                } else {
+                    isShowingRouteDetails = true
+                }
             }
-            
-            NavigationLink(
-                destination: routeDetailsView
-                    .navigationBarTitle("", displayMode: .inline)
-                    .navigationBarHidden(true),
-                isActive: $isShowingTransitRouteDetails) { }
-            
-            NavigationLink(
-                destination: directionsView
-                    .navigationBarTitle("", displayMode: .inline)
-                    .navigationBarHidden(true),
-                isActive: $isShowingRouteDetails) { }
-        }
+        )
+        
+        NavigationLink(
+            destination: routeDetailsView
+                .navigationBarTitle("", displayMode: .inline)
+                .navigationBarHidden(true),
+            isActive: $isShowingTransitRouteDetails) { }
+        
+        NavigationLink(
+            destination: directionsView
+                .navigationBarTitle("", displayMode: .inline)
+                .navigationBarHidden(true),
+            isActive: $isShowingRouteDetails) { }
     }
 }

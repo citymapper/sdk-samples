@@ -15,7 +15,7 @@ struct NearbyMapView: UIViewControllerRepresentable {
     let nearbyViewModel: NearbyViewModel
     
     func makeUIViewController(context: Context) -> some UIViewController {
-        let nearbyCardsVC = NearbyCardsViewController(nearbyViewModel: nearbyViewModel)
+        let nearbyCardsVC = NearbyFiltersAndCardsViewController(nearbyViewModel: nearbyViewModel)
         let nearbyMapVC = NearbyMapViewController(nearbyViewModel: nearbyViewModel,
                                                   childControllersToAdd:[
                                                     (nearbyCardsVC, UIEdgeInsets(top: 0, left: 12, bottom: 0, right: -12))
@@ -29,6 +29,6 @@ struct NearbyMapView: UIViewControllerRepresentable {
     }
 }
 
-extension NearbyCardsViewController {
+extension NearbyFiltersAndCardsViewController {
 
 }

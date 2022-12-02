@@ -1,7 +1,9 @@
 package com.example.simpletransportviews.screens.getmesomewhere
 
 import android.os.Bundle
+import android.text.TextUtils.replace
 import android.view.LayoutInflater
+import android.view.SearchEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
@@ -18,58 +20,61 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.fragment.findNavController
+import com.citymapper.sdk.core.transit.DepartApproximateNow
+import com.citymapper.sdk.core.transit.DepartOrArriveConstraint
+import com.citymapper.sdk.core.transit.Route
+import com.citymapper.sdk.directions.CitymapperDirections
+import com.citymapper.sdk.ui.navigation.CitymapperDirectionsView
+import com.citymapper.sdk.ui.routedetail.RouteDetail
+import com.citymapper.sdk.ui.search.ExpandedSheetBehaviour
 import com.citymapper.sdk.ui.search.ExperimentalSearchUi
+import com.citymapper.sdk.ui.search.SearchEndpoint
+import com.citymapper.sdk.ui.search.google.googleSearchProviderFactory
+import com.example.simpletransportviews.BuildConfig
 import com.example.simpletransportviews.R
+import com.example.simpletransportviews.config.Constants
 import com.example.simpletransportviews.databinding.FragmentGmsBinding
+import com.example.simpletransportviews.screens.NavRoutes
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalSearchUi::class)
 class GetMeSomewhereFragment : Fragment(R.layout.fragment_gms) {
 
-  private val viewModel by viewModels<GetMeSomewhereViewModel>()
-
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
     val binding = FragmentGmsBinding.bind(view)
-    val toolbar = binding.toolbar
-    ViewCompat.setOnApplyWindowInsetsListener(toolbar) { _, insets ->
-      toolbar.updateLayoutParams<MarginLayoutParams> {
-        topMargin = insets.getInsets(WindowInsetsCompat.Type.statusBars()).top
-      }
-      insets
-    }
-    toolbar.setNavigationIcon(R.drawable.ic_navigation_up)
-    toolbar.setNavigationOnClickListener {
-      findNavController().navigateUp()
-    }
-
-    viewLifecycleOwner.lifecycleScope.launch {
-      viewModel.searchState.resolvedState.collect {
-        if (it != null) {
-          showResults()
-        } else {
-          showSearch()
+    val searchView = binding.searchView
+    searchView.configure(
+      defaultMapCenter = Constants.DefaultMapCenter,
+      searchProviderFactory = googleSearchProviderFactory(
+        googlePlacesApiKey = BuildConfig.PLACES_API_KEY,
+        region = Constants.DefaultSearchRegion
+      ),
+      topAppBarContent = {
+        DefaultTopAppBar {
+          findNavController().navigateUp()
         }
+      },
+      searchCompleteContent = {
+        RouteResults(
+          planBuilder = {
+            walkRoute()
+            bikeRoute()
+            transitRoutes()
+          },
+          onClickRoute = ::openRouteDetail
+        )
       }
-    }
+    )
   }
 
-  private fun showSearch() {
-    if (childFragmentManager.findFragmentById(R.id.fragment_container) is SearchFragment) {
-      return
-    }
-    childFragmentManager.commitNow {
-      replace(R.id.fragment_container, SearchFragment())
-    }
-  }
-
-  private fun showResults() {
-    if (childFragmentManager.findFragmentById(R.id.fragment_container) is RouteResultsFragment) {
-      return
-    }
-    childFragmentManager.commitNow {
-      replace(R.id.fragment_container, RouteResultsFragment())
+  private fun openRouteDetail(route: Route) {
+    if (CitymapperDirectionsView.supportsRoute(route)) {
+      val handle = CitymapperDirections.getInstance(requireContext()).storeRoute(route)
+      findNavController().navigate(NavRoutes.Directions(handle.toString()))
+    } else {
+      RouteDetail.showStandaloneRouteDetailScreen(requireContext(), route)
     }
   }
 }

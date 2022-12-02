@@ -9,6 +9,14 @@ android {
 
     buildFeatures {
         viewBinding true
+
+        // Although this sample uses traditional views, Compose
+        // is required to customise some of the UI components
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
     }
 
     defaultConfig {
@@ -53,6 +61,7 @@ dependencies {
     implementation libs.google.material
     implementation libs.citymapper.ui
     implementation libs.citymapper.ui.search
+    implementation libs.citymapper.ui.nearby
     testImplementation libs.junit
     androidTestImplementation libs.androidx.test.junit
     androidTestImplementation libs.androidx.test.espresso

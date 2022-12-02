@@ -30,7 +30,7 @@ struct FlowEntryPointView: View {
                 .foregroundColor(.white)
                 
                 NavigationLink(
-                    destination: SearchViewWrapped(routesLoader: DefaultRoutesLoader()),
+                    destination: RouteListView(),
                     isActive: $viewModel.isShowingGMSView
                 ) { }
                 

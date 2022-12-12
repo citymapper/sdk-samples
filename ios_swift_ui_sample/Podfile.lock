@@ -1,19 +1,19 @@
 PODS:
-  - CitymapperCore (3.3.0-alpha.14)
-  - CitymapperGoogleSearchProvider (3.3.0-alpha.14):
-    - CitymapperInternalCore (= 3.3.0-alpha.14)
-    - CitymapperNavigation (= 3.3.0-alpha.14)
-  - CitymapperInternalCore (3.3.0-alpha.14):
-    - CitymapperCore (= 3.3.0-alpha.14)
-  - CitymapperNavigation (3.3.0-alpha.14):
-    - CitymapperInternalCore (= 3.3.0-alpha.14)
-  - CitymapperUI (3.3.0-alpha.14):
-    - CitymapperInternalCore (= 3.3.0-alpha.14)
-    - CitymapperNavigation (= 3.3.0-alpha.14)
+  - CitymapperCore (3.3.0-alpha.16)
+  - CitymapperGoogleSearchProvider (3.3.0-alpha.16):
+    - CitymapperInternalCore (= 3.3.0-alpha.16)
+    - CitymapperNavigation (= 3.3.0-alpha.16)
+  - CitymapperInternalCore (3.3.0-alpha.16):
+    - CitymapperCore (= 3.3.0-alpha.16)
+  - CitymapperNavigation (3.3.0-alpha.16):
+    - CitymapperInternalCore (= 3.3.0-alpha.16)
+  - CitymapperUI (3.3.0-alpha.16):
+    - CitymapperInternalCore (= 3.3.0-alpha.16)
+    - CitymapperNavigation (= 3.3.0-alpha.16)
 
 DEPENDENCIES:
-  - CitymapperGoogleSearchProvider (= 3.3.0-alpha.14)
-  - CitymapperUI (= 3.3.0-alpha.14)
+  - CitymapperGoogleSearchProvider (= 3.3.0-alpha.16)
+  - CitymapperUI (= 3.3.0-alpha.16)
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
@@ -24,12 +24,12 @@ SPEC REPOS:
     - CitymapperUI
 
 SPEC CHECKSUMS:
-  CitymapperCore: 4ffd927a4448d8915f557fd50a709bbaffdcde72
-  CitymapperGoogleSearchProvider: 0760382ed08c5f717475a9630abbfbcdc1cac67f
-  CitymapperInternalCore: bb1dc4247ea762e079a6424821df0677f0730f77
-  CitymapperNavigation: f79582b861451cd68dc6993484fd30962227d3fc
-  CitymapperUI: 82872a789212185074c327e8663d81f11e5301c4
+  CitymapperCore: 50848fcb21de302444878097d7def7a24a2aaada
+  CitymapperGoogleSearchProvider: 0e38be580411f7d1cc26d0e8d6582aeada95f726
+  CitymapperInternalCore: 6287b70d145b81cea09ff5c3e1147a574461d744
+  CitymapperNavigation: c1d1417ef60d9cdffb05e6463a8e89f1071bd69d
+  CitymapperUI: 1fc7cd543efe2836d57a920da89c4fa73de310f8
 
-PODFILE CHECKSUM: b0222d591fbe2b1241a565b0a040e2b640d23ca3
+PODFILE CHECKSUM: 5a5cd5b1c8e309b44bd19ed7418cb096be91caf0
 
 COCOAPODS: 1.11.3

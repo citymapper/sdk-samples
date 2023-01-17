@@ -6,7 +6,7 @@ compose = "1.3.1"
 composeCompiler = "1.3.0"
 lifecycle = "2.5.1"
 espresso = "3.3.0"
-citymapperSdk = "3.0.0-alpha07"
+citymapperSdk = "3.0.0-alpha10"
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin"}
@@ -17,7 +17,7 @@ android-library = { id = "com.android.library", version.ref = "agp"}
 citymapper-navigation = { module = "com.citymapper.sdk:citymapper-navigation", version.ref = "citymapperSdk" }
 citymapper-ui = { module = "com.citymapper.sdk:citymapper-ui", version.ref = "citymapperSdk" }
 citymapper-ui-search = { module = "com.citymapper.sdk:citymapper-search-ui", version.ref = "citymapperSdk" }
-citymapper-ui-nearby = { module = "com.citymapper.sdk:nearby", version.ref = "citymapperSdk" }
+citymapper-ui-nearby = { module = "com.citymapper.sdk:citymapper-nearby-ui", version.ref = "citymapperSdk" }
 kotlin-gradle = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlin-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }

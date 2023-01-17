@@ -57,7 +57,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     val onBackPressedCallback = object : OnBackPressedCallback(false) {
       override fun handleOnBackPressed() {
         if (isShowingNearby(binding)) {
-          animateToHome(binding, this)
+          animateToHome(binding, nearbyState, this)
         }
       }
     }
@@ -66,10 +66,14 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
       onBackPressedCallback
     )
 
-    binding.map.configure(nearbyState, fallbackMapCenter = Constants.DefaultMapCenter)
-    binding.showNearby.setOnClickListener {
-      animateToNearby(binding, nearbyState, onBackPressedCallback)
-    }
+    binding.map.configure(
+      nearbyState,
+      fallbackMapCenter = Constants.DefaultMapCenter,
+      onMapClickListener = {
+        if (!isShowingNearby(binding)) {
+          animateToNearby(binding, nearbyState, onBackPressedCallback)
+        }
+      })
   }
 
   private fun checkPermissionAndOpenGms() {
@@ -103,7 +107,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
           )
 
-          detailView.configure(nearbyState)
+          detailView.configure(nearbyState) {
+            animateToHome(binding, nearbyState, onBackPressedCallback)
+          }
           onBackPressedCallback.isEnabled = true
         }
       })
@@ -111,11 +117,13 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
   private fun animateToHome(
     binding: FragmentHomeBinding,
+    nearbyState: CitymapperNearbyState,
     onBackPressedCallback: OnBackPressedCallback
   ) {
     binding.nearbyCardsContainer.removeAllViews()
     binding.gmsContainer.animate().translationY(0f).setListener(null)
     onBackPressedCallback.isEnabled = false
+    nearbyState.clearSelectedFeature()
   }
 
   private fun openGms() {

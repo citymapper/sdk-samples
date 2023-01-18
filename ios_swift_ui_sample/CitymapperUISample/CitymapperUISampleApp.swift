@@ -11,7 +11,9 @@ import SwiftUI
 struct CitymapperUISampleApp: App {
     var body: some Scene {
         WindowGroup {
-            FlowEntryPointView()
+            NavigationView {
+                NearbyViewWrapped()
+            }
         }
     }
 }

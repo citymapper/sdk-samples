@@ -9,8 +9,9 @@ target 'CitymapperUISample' do
 
   # Pods for CitymapperUISample
 
-  pod 'CitymapperUI', '3.3.0-alpha.16'
-  pod 'CitymapperGoogleSearchProvider', '3.3.0-alpha.16'
+  # TODO: change to alpha once released
+  pod 'CitymapperUI', '3.3.0-alpha.19'
+  pod 'CitymapperGoogleSearchProvider', '3.3.0-alpha.19'
 
   target 'CitymapperUISampleTests' do
     inherit! :search_paths

@@ -12,6 +12,8 @@ import MapKit
 
 struct RouteListView: View {
     
+    @Environment(\.presentationMode) var presentationMode
+    
     @State private var isShowingTransitRouteDetails = false
     @State private var isShowingRouteDetails = false
     @State private (set) var route: Route? = nil
@@ -51,21 +53,25 @@ struct RouteListView: View {
             defaultMapCenter: Coords(latitude: bigBen.latitude, longitude: bigBen.longitude),
             searchProviderFactory: searchProviderFactory,
             onClose: {
-                // Back button action
+                presentationMode.wrappedValue.dismiss()
             },
-            planBuilder: { builder in
-                // Customise the routes planned
-                builder.walkRoute()
-                builder.scooterRoute()
-                builder.transitRoutes()
-            },
-            onClickRoute: { route in
-                self.route = route
-                if route.hasTransitLegs() {
-                    isShowingTransitRouteDetails = true
-                } else {
-                    isShowingRouteDetails = true
-                }
+            searchCompleteView: { spec in
+                DefaultSearchCompleteView(
+                    spec: spec,
+                    planBuilder: { builder in
+                        // Customise the routes planned
+                        builder.walkRoute()
+                        builder.scooterRoute()
+                        builder.transitRoutes()
+                    },
+                    onClickRoute: { route in
+                        self.route = route
+                        if route.hasTransitLegs() {
+                            isShowingTransitRouteDetails = true
+                        } else {
+                            isShowingRouteDetails = true
+                        }
+                    })
             }
         )
         

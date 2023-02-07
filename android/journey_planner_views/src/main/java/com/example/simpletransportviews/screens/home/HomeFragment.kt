@@ -18,6 +18,7 @@ import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.citymapper.sdk.ui.map.MapFocus
 import com.citymapper.sdk.ui.nearby.CitymapperNearbyState
 import com.citymapper.sdk.ui.nearby.view.NearbyFiltersAndDetailView
 import com.example.simpletransportviews.R
@@ -68,7 +69,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     binding.map.configure(
       nearbyState,
-      fallbackMapCenter = Constants.DefaultMapCenter,
+      fallbackMapFocus = MapFocus.Center(Constants.DefaultMapCenter),
       onMapClickListener = {
         if (!isShowingNearby(binding)) {
           animateToNearby(binding, nearbyState, onBackPressedCallback)

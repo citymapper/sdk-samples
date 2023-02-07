@@ -63,7 +63,7 @@ class GetMeSomewhereFragment : Fragment(R.layout.fragment_gms) {
             bikeRoute()
             transitRoutes()
           },
-          onClickRoute = ::openRouteDetail
+          onRouteClick = ::openRouteDetail
         )
       }
     )

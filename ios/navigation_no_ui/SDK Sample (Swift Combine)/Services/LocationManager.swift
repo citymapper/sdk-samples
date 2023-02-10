@@ -23,18 +23,17 @@ class LocationManager: NSObject {
     override init() {
         super.init()
 
-        DispatchQueue.main.async {
-            let locationManager = CLLocationManager()
-            locationManager.delegate = self
-            self.internalLocationManager = locationManager
-            self.authorizationStatus = locationManager.authorizationStatus
+        assert(Thread.isMainThread)
+        let locationManager = CLLocationManager()
+        locationManager.delegate = self
+        self.internalLocationManager = locationManager
+        self.authorizationStatus = locationManager.authorizationStatus
 
-            if self.canUpdateUserLocation(with: locationManager.authorizationStatus) {
-                self.startUpdatingLocation()
-            }
-
-            self.locationManagerReadyQueue.isSuspended = false
+        if canUpdateUserLocation(with: locationManager.authorizationStatus) {
+            startUpdatingLocation()
         }
+
+        locationManagerReadyQueue.isSuspended = false
     }
 
     func requestWhenInUseLocationPermission() {

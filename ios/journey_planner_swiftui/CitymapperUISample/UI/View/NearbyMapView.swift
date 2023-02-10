@@ -10,6 +10,7 @@ import Foundation
 import SwiftUI
 import UIKit
 import CitymapperCore
+import CoreLocation
 
 private class NearbyMapViewState: ObservableObject {
     internal init(showAdditionalUI: Binding<Bool>) {
@@ -57,17 +58,18 @@ struct NearbyMapView: UIViewControllerRepresentable {
             theme: theme,
             nearbyViewModel: nearbyViewModel,
             closeButtonAction: {
-            self.state.closeTapped()
+                nearbyViewModel.clearSelectionAndFilter()
+                self.state.closeTapped()
         })
 
         let nearbyMapVC = NearbyMapViewController(
             theme: theme,
             nearbyViewModel: nearbyViewModel,
-            fallbackMapCenter: CitymapperCore.Coords(latitude: 51.49, longitude: 0.14),
+            fallbackMapCenter: .center(CLLocationCoordinate2D(latitude: 51.49, longitude: 0.14)),
             childControllersToAdd: [
                 (nearbyCardsVC, UIEdgeInsets(top: 0, left: 12, bottom: 0, right: -12))
             ],
-            onMapTapped: {
+            didTapMap: {
                 self.state.mapTapped()
             }
         )

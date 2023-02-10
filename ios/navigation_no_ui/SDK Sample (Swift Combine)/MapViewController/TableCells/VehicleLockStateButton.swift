@@ -10,7 +10,7 @@ import UIKit
 struct VehicleLockStateButtonCellSpec: TableCellSpec {
     var type: TableCellSpecType = .vehicleLockStateButton
 
-    var contentInsets: UIEdgeInsets? = nil
+    var contentInsets: UIEdgeInsets?
 
     let attributedText: NSAttributedString
     let backgroundColor: UIColor

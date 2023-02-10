@@ -23,21 +23,22 @@ final class GuidanceFetcher: NSObject {
     func startNavigating(from start: CLLocationCoordinate2D,
                          to destination: CLLocationCoordinate2D,
                          profile: Profile,
-                         originalVehicleLocation: Coords? = nil) {
+                         rideStartLocation: CLLocationCoordinate2D? = nil) {
         let storedCurrentApiString = UserDefaults.standard.currentSelectedApi
         let selectedApi = AvailableApi(rawValue: storedCurrentApiString) ?? .bikeRide
 
+        let directions = CitymapperDirections.shared
         switch selectedApi {
         case .walk:
-            CitymapperDirections.shared.planWalkRoutes(start: start, end: destination) { [weak self] result in
+            directions.planWalkRoutes(start: start, end: destination) { [weak self] result in
                 self?.startNavigatingCompletion(result: result)
             }
         case .bikeRide:
-            CitymapperDirections.shared.planBikeRoutes(start: start, end: destination, profiles: [profile]) { [weak self] result in
+            directions.planBikeRoutes(start: start, end: destination, profiles: [profile]) { [weak self] result in
                 self?.startNavigatingCompletion(result: result)
             }
         case .scooterRide:
-            CitymapperDirections.shared.planScooterRoute(start: start, end: destination) { [weak self] result in
+            directions.planScooterRoute(start: start, end: destination) { [weak self] result in
                 self?.startNavigatingCompletion(result: result)
             }
         case .scooter:
@@ -46,11 +47,11 @@ final class GuidanceFetcher: NSObject {
                 errorEncountered(withTitle: "Scooter hire brand id invalid")
                 return
             }
-
-            CitymapperDirections.shared.planScooterHireRoute(start: start,
-                                                             end: destination,
-                                                             brandId: validBrandId,
-                                                             originalVehicleLocation: originalVehicleLocation) { [weak self] result in
+            
+            directions.planScooterHireRoute(start: start,
+                                            end: destination,
+                                            brandId: validBrandId,
+                                            rideStartLocation: rideStartLocation) { [weak self] result in
                 self?.startNavigatingCompletion(result: result)
             }
         case .bike:
@@ -60,11 +61,11 @@ final class GuidanceFetcher: NSObject {
                 return
             }
 
-            CitymapperDirections.shared.planBikeHireRoutes(start: start,
-                                                           end: destination,
-                                                           brandId: validBrandId,
-                                                           originalVehicleLocation: originalVehicleLocation,
-                                                           profiles: [profile]) { [weak self] result in
+            directions.planBikeHireRoutes(start: start,
+                                                            end: destination,
+                                                            brandId: validBrandId,
+                                                            rideStartLocation: rideStartLocation,
+                                                            profiles: [profile]) { [weak self] result in
                 self?.startNavigatingCompletion(result: result)
             }
         }

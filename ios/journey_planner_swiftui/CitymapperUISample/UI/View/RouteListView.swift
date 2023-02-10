@@ -50,21 +50,20 @@ struct RouteListView: View {
         BottomSheetSearchWithMapView(
             // A fallback location for the map center e.g. if no location permission
             // is granted
-            defaultMapCenter: Coords(latitude: bigBen.latitude, longitude: bigBen.longitude),
+            defaultMapFocus: .center(bigBen),
             searchProviderFactory: searchProviderFactory,
-            onClose: {
+            dismissAction: {
                 presentationMode.wrappedValue.dismiss()
             },
-            searchCompleteView: { spec in
-                DefaultSearchCompleteView(
-                    spec: spec,
+            searchCompleteView: { scope in
+                scope.routeResults(
                     planBuilder: { builder in
                         // Customise the routes planned
                         builder.walkRoute()
                         builder.scooterRoute()
                         builder.transitRoutes()
                     },
-                    onClickRoute: { route in
+                    didTapRoute: { route in
                         self.route = route
                         if route.hasTransitLegs() {
                             isShowingTransitRouteDetails = true

@@ -297,7 +297,7 @@ extension MapListViewModel {
             specs.append(contentsOf: subsequentInstructionSpecs)
         }
 
-        let routeContainsHiredLeg = validActiveRoute.legs.contains { (leg) -> Bool in
+        let routeContainsHiredLeg = validActiveRoute.legs.contains { leg -> Bool in
             leg.type == .hiredVehicle
         }
 

@@ -9,8 +9,8 @@ target 'CitymapperUISample' do
 
   # Pods for CitymapperUISample
 
-  pod 'CitymapperUI', '3.3.0-beta.2'
-  pod 'CitymapperGoogleSearchProvider', '3.3.0-beta.2'
+  pod 'CitymapperUI', '3.3.0-beta.7'
+  pod 'CitymapperGoogleSearchProvider', '3.3.0-beta.7'
 
   target 'CitymapperUISampleTests' do
     inherit! :search_paths

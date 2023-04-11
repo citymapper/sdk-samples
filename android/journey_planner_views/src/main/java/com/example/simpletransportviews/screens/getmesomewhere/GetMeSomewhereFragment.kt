@@ -24,6 +24,7 @@ import com.citymapper.sdk.core.transit.DepartApproximateNow
 import com.citymapper.sdk.core.transit.DepartOrArriveConstraint
 import com.citymapper.sdk.core.transit.Route
 import com.citymapper.sdk.directions.CitymapperDirections
+import com.citymapper.sdk.ui.map.MapFocus
 import com.citymapper.sdk.ui.navigation.CitymapperDirectionsView
 import com.citymapper.sdk.ui.routedetail.RouteDetail
 import com.citymapper.sdk.ui.search.ExpandedSheetBehaviour
@@ -37,7 +38,6 @@ import com.example.simpletransportviews.databinding.FragmentGmsBinding
 import com.example.simpletransportviews.screens.NavRoutes
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalSearchUi::class)
 class GetMeSomewhereFragment : Fragment(R.layout.fragment_gms) {
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -46,7 +46,7 @@ class GetMeSomewhereFragment : Fragment(R.layout.fragment_gms) {
     val binding = FragmentGmsBinding.bind(view)
     val searchView = binding.searchView
     searchView.configure(
-      defaultMapCenter = Constants.DefaultMapCenter,
+      defaultMapFocus = MapFocus.onPoint(Constants.DefaultMapCenter),
       searchProviderFactory = googleSearchProviderFactory(
         googlePlacesApiKey = BuildConfig.PLACES_API_KEY,
         region = Constants.DefaultSearchRegion

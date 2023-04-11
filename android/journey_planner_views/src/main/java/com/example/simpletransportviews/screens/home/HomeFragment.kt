@@ -41,7 +41,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     super.onViewCreated(view, savedInstanceState)
 
     val nearbyState =
-      CitymapperNearbyState.create(requireContext(), viewLifecycleOwner.lifecycleScope)
+      CitymapperNearbyState.create(requireContext(), viewLifecycleOwner.lifecycleScope, defaultMapFocus = {
+        MapFocus.onPoint(it ?: Constants.DefaultMapCenter)
+      })
 
     val binding = FragmentHomeBinding.bind(view)
     binding.getMeSomewhere.setOnClickListener {
@@ -69,7 +71,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
     binding.map.configure(
       nearbyState,
-      fallbackMapFocus = MapFocus.Center(Constants.DefaultMapCenter),
       onMapClickListener = {
         if (!isShowingNearby(binding)) {
           animateToNearby(binding, nearbyState, onBackPressedCallback)
@@ -124,7 +125,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     binding.nearbyCardsContainer.removeAllViews()
     binding.gmsContainer.animate().translationY(0f).setListener(null)
     onBackPressedCallback.isEnabled = false
-    nearbyState.clearSelectedFeature()
+    nearbyState.clearSelectionAndFilter()
   }
 
   private fun openGms() {

@@ -52,7 +52,9 @@ struct NearbyMapView: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> some UIViewController {
         
         let theme = BasicTheme()
-        let nearbyViewModel = NearbyViewModel(theme: theme)
+        let nearbyViewModel = NearbyViewModel(defaultMapFocus: {
+            .center($0 ?? CLLocationCoordinate2D(latitude: 51.49, longitude: 0.14))
+        })
         
         let nearbyCardsVC = NearbyFiltersAndCardsViewController(
             theme: theme,
@@ -65,7 +67,6 @@ struct NearbyMapView: UIViewControllerRepresentable {
         let nearbyMapVC = NearbyMapViewController(
             theme: theme,
             nearbyViewModel: nearbyViewModel,
-            fallbackMapCenter: .center(CLLocationCoordinate2D(latitude: 51.49, longitude: 0.14)),
             childControllersToAdd: [
                 (nearbyCardsVC, UIEdgeInsets(top: 0, left: 12, bottom: 0, right: -12))
             ],

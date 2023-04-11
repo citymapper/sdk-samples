@@ -1,19 +1,19 @@
 PODS:
-  - CitymapperCore (3.3.0-beta.2)
-  - CitymapperGoogleSearchProvider (3.3.0-beta.2):
-    - CitymapperInternalCore (= 3.3.0-beta.2)
-    - CitymapperNavigation (= 3.3.0-beta.2)
-  - CitymapperInternalCore (3.3.0-beta.2):
-    - CitymapperCore (= 3.3.0-beta.2)
-  - CitymapperNavigation (3.3.0-beta.2):
-    - CitymapperInternalCore (= 3.3.0-beta.2)
-  - CitymapperUI (3.3.0-beta.2):
-    - CitymapperInternalCore (= 3.3.0-beta.2)
-    - CitymapperNavigation (= 3.3.0-beta.2)
+  - CitymapperCore (3.3.0-beta.7)
+  - CitymapperGoogleSearchProvider (3.3.0-beta.7):
+    - CitymapperInternalCore (= 3.3.0-beta.7)
+    - CitymapperNavigation (= 3.3.0-beta.7)
+  - CitymapperInternalCore (3.3.0-beta.7):
+    - CitymapperCore (= 3.3.0-beta.7)
+  - CitymapperNavigation (3.3.0-beta.7):
+    - CitymapperInternalCore (= 3.3.0-beta.7)
+  - CitymapperUI (3.3.0-beta.7):
+    - CitymapperInternalCore (= 3.3.0-beta.7)
+    - CitymapperNavigation (= 3.3.0-beta.7)
 
 DEPENDENCIES:
-  - CitymapperGoogleSearchProvider (= 3.3.0-beta.2)
-  - CitymapperUI (= 3.3.0-beta.2)
+  - CitymapperGoogleSearchProvider (= 3.3.0-beta.7)
+  - CitymapperUI (= 3.3.0-beta.7)
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
@@ -24,12 +24,12 @@ SPEC REPOS:
     - CitymapperUI
 
 SPEC CHECKSUMS:
-  CitymapperCore: f3e1bbfd81bd093256edd74fa5c1b53e2189f90f
-  CitymapperGoogleSearchProvider: 5a24de9d3f94ce33c8e3e2ebe2a769c1f7bd86ef
-  CitymapperInternalCore: ce2d0f175b2eb1ce8ecca2847972ba3d35c9ab17
-  CitymapperNavigation: a18df896da33e65b53df4d2a121f41d2e969f0ed
-  CitymapperUI: c55eaea327ffcd3af0be5e23cbb32315768de996
+  CitymapperCore: 792940c38b07e037a52ea90f6ae27e241590f22b
+  CitymapperGoogleSearchProvider: 21cde86efe1cc1149a3ce4f35d04d0a5d54a86af
+  CitymapperInternalCore: d07538d781dfef529b94a3a3b5a42fb4a5aaa606
+  CitymapperNavigation: c0333c1a4aa30825c9dc94a40d4c0d43527b2da7
+  CitymapperUI: 87ebe5cd1cbdcef48a4ef6b013810ddd6f9003e5
 
-PODFILE CHECKSUM: 6ae1f9a51cdddc4a334c5d5af0a77862f1e070af
+PODFILE CHECKSUM: 06a876158d3c6085908d76569c970a68eeec84ea
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.12.0

@@ -154,6 +154,7 @@ private class TextToSpeech constructor(private val context: Context, private val
         onUtteranceFinishedWithResult(utteranceId, LastUtteranceResult.Success)
       }
 
+      @Deprecated("Deprecated in Java")
       override fun onError(utteranceId: String) {
         abandonAudioFocus()
         onUtteranceFinishedWithResult(utteranceId, LastUtteranceResult.Error)

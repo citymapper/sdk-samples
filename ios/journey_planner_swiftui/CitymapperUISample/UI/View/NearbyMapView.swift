@@ -11,6 +11,7 @@ import SwiftUI
 import UIKit
 import CitymapperCore
 import CoreLocation
+import MapKit
 
 private class NearbyMapViewState: ObservableObject {
     internal init(showAdditionalUI: Binding<Bool>) {
@@ -50,10 +51,18 @@ struct NearbyMapView: UIViewControllerRepresentable {
     @ObservedObject private var state: NearbyMapViewState
     
     func makeUIViewController(context: Context) -> some UIViewController {
-        
+        let region = MKCoordinateRegion(
+            center: .init(latitude: 4.6542644, longitude: -74.1189713),
+            latitudinalMeters: 25000,
+            longitudinalMeters: 25000
+        )
         let theme = BasicTheme()
-        let nearbyViewModel = NearbyViewModel(defaultMapFocus: {
-            .center($0 ?? CLLocationCoordinate2D(latitude: 51.49, longitude: 0.14))
+        let nearbyViewModel = NearbyViewModel(defaultMapFocus: { location in
+            if let location, region.contains(coordinate: location) {
+                return .center(location)
+            } else {
+                return .region(region)
+            }
         })
         
         let nearbyCardsVC = NearbyFiltersAndCardsViewController(
@@ -80,5 +89,25 @@ struct NearbyMapView: UIViewControllerRepresentable {
     
     func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {
         uiViewController.children.first { $0 is NearbyFiltersAndCardsViewController}?.view.isHidden = !state.showAdditionalUI
+    }
+}
+
+private extension MKCoordinateRegion {
+    func contains(coordinate: CLLocationCoordinate2D) -> Bool {
+        // Doesn't account for regions which cross the 180-degree meridian, for simplicity
+        
+        let latitudeDeltaHalf = span.latitudeDelta / 2.0
+        let longitudeDeltaHalf = span.longitudeDelta / 2.0
+        
+        let centerLatitude = center.latitude
+        let centerLongitude = center.longitude
+        
+        let coordinateLatitude = coordinate.latitude
+        let coordinateLongitude = coordinate.longitude
+        
+        let latitudeCondition = abs(centerLatitude - coordinateLatitude) <= latitudeDeltaHalf
+        let longitudeCondition = abs(centerLongitude - coordinateLongitude) <= longitudeDeltaHalf
+        
+        return latitudeCondition && longitudeCondition
     }
 }

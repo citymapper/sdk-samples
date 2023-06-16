@@ -1,0 +1,88 @@
+plugins {
+    alias libs.plugins.android.application
+    alias libs.plugins.kotlin
+}
+
+apply plugin: 'kotlin-parcelize'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        applicationId "com.example.sdk.sample"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+
+        buildConfigField "String", "CITYMAPPER_API_KEY", "\"${project.findProperty("CITYMAPPER_API_KEY") ?: ""}\""
+        resValue "string", "google_map_key", "\"${project.findProperty("GOOGLE_MAP_API_KEY") ?: ""}\""
+
+        buildFeatures {
+            compose = true
+            buildConfig = true
+        }
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+
+        freeCompilerArgs += [
+            '-Xjsr305=strict',
+            '-Xjvm-default=all',
+            '-Xopt-in=kotlin.RequiresOptIn',
+            '-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi',
+            '-Xopt-in=kotlinx.coroutines.FlowPreview',
+        ]
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion libs.versions.composeCompiler.get()
+    }
+
+    packagingOptions {
+        pickFirst 'META-INF/AL2.0'
+        pickFirst 'META-INF/LGPL2.1'
+    }
+
+    lint {
+        lintConfig file("$rootDir/lint.xml")
+        checkDependencies true
+    }
+}
+
+dependencies {
+    implementation libs.citymapper.navigation
+
+    implementation libs.androidx.core
+    implementation libs.androidx.activity.compose
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.constraintlayout
+    implementation libs.androidx.datastore
+    implementation libs.androidx.lifecycle.viewmodel.compose
+    implementation libs.bundles.compose
+
+    implementation libs.kotlin.coroutines.playServices
+
+    implementation libs.google.maps
+    implementation libs.gms.location
+
+    testImplementation libs.junit
+    androidTestImplementation libs.androidx.test.junit
+    androidTestImplementation libs.androidx.test.espresso
+
+}

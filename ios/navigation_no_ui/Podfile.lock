@@ -1,0 +1,24 @@
+PODS:
+  - CitymapperCore (3.3.0-alpha.2)
+  - CitymapperInternalCore (3.3.0-alpha.2):
+    - CitymapperCore (= 3.3.0-alpha.2)
+  - CitymapperNavigation (3.3.0-alpha.2):
+    - CitymapperInternalCore (= 3.3.0-alpha.2)
+
+DEPENDENCIES:
+  - CitymapperNavigation (= 3.3.0-alpha.2)
+
+SPEC REPOS:
+  trunk:
+    - CitymapperCore
+    - CitymapperInternalCore
+    - CitymapperNavigation
+
+SPEC CHECKSUMS:
+  CitymapperCore: 013bba550ac9760f673355610e8e3b4381ce50d4
+  CitymapperInternalCore: c570f9c48dc40b456f002dd4fc7e0654b08bd720
+  CitymapperNavigation: a6f92385b2eb0189a49d57964e7c0eacd0d36c98
+
+PODFILE CHECKSUM: 68dd4f4db754cc74681ecf86790264c6fd8388ac
+
+COCOAPODS: 1.11.3
